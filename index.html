@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -90,6 +90,24 @@
     .today strong {
       color: var(--text);
       font-size: 1.05rem;
+    }
+
+    .header-tools {
+      display: grid;
+      justify-items: end;
+      gap: 8px;
+    }
+
+    .lang-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .lang-switch select {
+      min-width: 130px;
     }
 
     .layout {
@@ -990,16 +1008,22 @@
   <div class="app">
     <header>
       <div>
-        <h1>Last Z - 3-Account Manager</h1>
-        <p class="subtitle">Plan routines, track progress, and never forget the important tasks on each account.</p>
+        <h1 id="appTitle">Last Z - 3-Account Manager</h1>
+        <p class="subtitle" id="appSubtitle">Plan routines, track progress, and never forget the important tasks on each account.</p>
       </div>
-      <div class="today">
-        <span>Today</span>
-        <strong id="todayLabel"></strong>
+      <div class="header-tools">
+        <label class="lang-switch" for="languageSelect">
+          <span id="languageLabel">Language</span>
+          <select id="languageSelect"></select>
+        </label>
+        <div class="today">
+          <span id="todayPrefix">Today</span>
+          <strong id="todayLabel"></strong>
+        </div>
       </div>
     </header>
 
-    <div class="tool-tabs" role="tablist" aria-label="Sections de l'outil">
+    <div class="tool-tabs" role="tablist" aria-label="Tool sections">
       <button class="tab-btn active" id="dailyTab" type="button">Today</button>
       <button class="tab-btn" id="allianceTab" type="button">Alliance</button>
       <button class="tab-btn" id="movementsTab" type="button">Movements</button>
@@ -1009,14 +1033,14 @@
       <aside>
         <nav class="account-list" id="accountTabs" aria-label="Accounts"></nav>
         <section class="quick">
-          <h2>Quick actions</h2>
+          <h2 id="quickTitle">Quick actions</h2>
           <div class="settings">
             <label>
-              Server reset time
+              <span id="resetTimeLabel">Server reset time</span>
               <input id="resetTime" type="time" value="04:00">
             </label>
             <label>
-              Full Prep day
+              <span id="fullPrepDayLabel">Full Prep day</span>
               <select id="fullPrepDay">
                 <option value="1">Monday - Day 1</option>
                 <option value="2">Tuesday - Day 2</option>
@@ -1054,11 +1078,11 @@
           <div class="moment-filter" id="momentFilter" aria-label="Filtrer par moment"></div>
           <form class="task-form" id="taskForm">
             <label>
-              Task
+              <span id="taskNameLabel">Task</span>
               <input id="taskName" maxlength="90" placeholder="Ex: collect resources" required>
             </label>
             <label>
-              Category
+              <span id="taskCategoryLabel">Category</span>
               <select id="taskCategory">
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
@@ -1066,11 +1090,11 @@
               </select>
             </label>
             <label>
-              Suggested moment
+              <span id="taskMomentLabel">Suggested moment</span>
               <select id="taskMoment"></select>
             </label>
             <label>
-              Priority
+              <span id="taskPriorityLabel">Priority</span>
               <select id="taskPriority">
                 <option value="high">High</option>
                 <option value="mid">Medium</option>
@@ -1078,7 +1102,7 @@
               </select>
             </label>
             <label>
-              Time
+              <span id="taskTimeLabel">Time</span>
               <input id="taskTime" type="time">
             </label>
             <button class="primary" type="submit" title="Add task">+ Add</button>
@@ -1086,7 +1110,7 @@
         </section>
 
         <section class="focus-panel">
-          <h2>What to do now</h2>
+          <h2 id="focusTitle">What to do now</h2>
           <div class="focus-task">
             <div>
               <strong id="focusTaskName">-</strong>
@@ -1097,25 +1121,25 @@
         </section>
 
         <section class="today-matrix-panel">
-          <h2>Today's progress by account</h2>
+          <h2 id="todayProgressTitle">Today's progress by account</h2>
           <div class="matrix-wrap">
             <table class="today-matrix" id="todayMatrix"></table>
           </div>
         </section>
 
         <section class="prep-panel">
-          <h2>Full Prep - current slot</h2>
+          <h2 id="prepTitle">Full Prep - current slot</h2>
           <div class="prep-status">
             <div class="prep-card">
-              <span>Current slot</span>
+              <span id="prepCurrentLabel">Current slot</span>
               <b id="prepCurrent">-</b>
             </div>
             <div class="prep-card">
-              <span>Next slot</span>
+              <span id="prepNextLabel">Next slot</span>
               <b id="prepNext">-</b>
             </div>
             <div class="prep-card">
-              <span>Advice</span>
+              <span id="prepAdviceTitle">Advice</span>
               <b id="prepAdvice">Prepare the theme actions before the slot.</b>
             </div>
           </div>
@@ -1125,7 +1149,7 @@
         </section>
 
         <section class="source-panel">
-          <h2>Last Z sources & data</h2>
+          <h2 id="sourceTitle">Last Z sources & data</h2>
           <div class="source-grid">
             <div class="source-card">
               <strong>DWD Field Research</strong>
@@ -1145,7 +1169,7 @@
           </div>
           <div class="lookup">
             <label>
-              Niveau HQ
+              <span id="hqLevelLabel">HQ level</span>
               <select id="hqLevelSelect"></select>
             </label>
             <div class="source-card">
@@ -1155,16 +1179,16 @@
           </div>
           <div class="source-grid">
             <div class="source-card">
-              <strong>Tank / Vehicle Mods</strong>
+              <strong id="tankTitle">Tank / Vehicle Mods</strong>
               <span id="tankSummary"></span>
             </div>
             <div class="source-card">
-              <strong>Research to prioritize</strong>
-              <span>The Google Sheet shows that Field Research requires New Home 100%, Elite Troops 100%, Military Strategies 40%, and Siege to Seize 100%.</span>
+              <strong id="researchTitle">Research to prioritize</strong>
+              <span id="researchText">The Google Sheet shows that Field Research requires New Home 100%, Elite Troops 100%, Military Strategies 40%, and Siege to Seize 100%.</span>
             </div>
             <div class="source-card">
-              <strong>Next useful integration</strong>
-              <span>Turn Research/Hero/Equipment costs into built-in calculators, one by one, to avoid a cluttered interface.</span>
+              <strong id="integrationTitle">Next useful integration</strong>
+              <span id="integrationText">Turn Research/Hero/Equipment costs into built-in calculators, one by one, to avoid a cluttered interface.</span>
             </div>
           </div>
         </section>
@@ -1175,14 +1199,14 @@
 
     <section class="alliance-view view hidden" id="allianceView">
       <section class="alliance-panel">
-        <h2>Alliance - contributions</h2>
+        <h2 id="allianceTitle">Alliance - contributions</h2>
         <div class="alliance-toolbar">
           <div>
             <label>
-              Search the table
+              <span id="allianceSearchLabel">Search the table</span>
             <input class="alliance-search" id="allianceSearch" type="search" placeholder="Name, rank, score, arena, contribution...">
             </label>
-            <p class="hint">Search scans all visible columns.</p>
+            <p class="hint" id="allianceHint">Search scans all visible columns.</p>
           </div>
         </div>
         <div class="alliance-summary">
@@ -1200,23 +1224,23 @@
 
     <section class="movements-view view hidden" id="movementsView">
       <section class="alliance-panel">
-        <h2>Movements - top 100 TMZ1</h2>
+        <h2 id="movementsTitle">Movements - top 100 TMZ1</h2>
         <div class="movements-summary">
           <div class="stat"><b id="movementsTargetCount">100</b><span>target players TMZ1</span></div>
           <div class="stat"><b id="movementsUpCount">0</b><span>TMZ2 → TMZ1</span></div>
           <div class="stat"><b id="movementsDownCount">0</b><span>TMZ1 → TMZ2</span></div>
-          <div class="stat"><b id="movementsCutoff">-</b><span>global contribution cutoff</span></div>
+          <div class="stat"><b id="movementsCutoff">-</b><span id="movementsCutoffLabel">global contribution cutoff</span></div>
         </div>
-        <p class="movements-note">The top 100 players by global contribution must stay in TMZ1. The players listed below are the ones that should switch to restore this split.</p>
+        <p class="movements-note" id="movementsNote">The top 100 players by global contribution must stay in TMZ1. The players listed below are the ones that should switch to restore this split.</p>
         <div class="movements-grid">
           <section class="movement-card">
-            <h3>TMZ2 → TMZ1</h3>
+            <h3 id="movementsUpTitle">TMZ2 → TMZ1</h3>
             <div class="alliance-table-wrap">
               <table class="alliance-table" id="movementsUpTable"></table>
             </div>
           </section>
           <section class="movement-card">
-            <h3>TMZ1 → TMZ2</h3>
+            <h3 id="movementsDownTitle">TMZ1 → TMZ2</h3>
             <div class="alliance-table-wrap">
               <table class="alliance-table" id="movementsDownTable"></table>
             </div>
@@ -1228,14 +1252,14 @@
 
   <dialog id="editDialog">
     <form class="dialog-form" id="editForm" method="dialog">
-      <h2>Edit task</h2>
+      <h2 id="editTitle">Edit task</h2>
       <input type="hidden" id="editId">
       <label>
-        Task
+        <span id="editNameLabel">Task</span>
         <input id="editName" maxlength="90" required>
       </label>
       <label>
-        Category
+        <span id="editCategoryLabel">Category</span>
         <select id="editCategory">
           <option value="daily">Daily</option>
           <option value="weekly">Weekly</option>
@@ -1243,11 +1267,11 @@
         </select>
       </label>
       <label>
-        Suggested moment
+        <span id="editMomentLabel">Suggested moment</span>
         <select id="editMoment"></select>
       </label>
       <label>
-        Priority
+        <span id="editPriorityLabel">Priority</span>
         <select id="editPriority">
           <option value="high">High</option>
           <option value="mid">Medium</option>
@@ -1255,12 +1279,12 @@
         </select>
       </label>
       <label>
-        Time
+        <span id="editTimeLabel">Time</span>
         <input id="editTime" type="time">
       </label>
       <div class="dialog-actions">
         <button class="ghost" value="cancel" type="button" id="cancelEdit">Cancel</button>
-        <button class="primary" value="default" type="submit">Save</button>
+        <button class="primary" value="default" type="submit" id="saveEdit">Save</button>
       </div>
     </form>
   </dialog>
@@ -1268,43 +1292,622 @@
   <script>
     const storageKey = "last-z-three-account-tasks-v1";
     const defaultResetTime = "04:00";
-    const categories = [
-      ["daily", "Daily"],
-      ["weekly", "Weekly"],
-      ["event", "Event"]
-    ];
-    const moments = [
-      ["all", "All"],
-      ["reset", "After reset"],
-      ["midday", "Midday"],
-      ["evening", "Evening"],
-      ["beforeReset", "Before reset"],
-      ["night", "Before night"]
-    ];
-    const momentLabel = Object.fromEntries(moments);
-    const momentAdvice = {
-      all: "Full routine view of the selected account.",
-      reset: "Grab logins, shop points, fresh tasks, bounties, and truck departures.",
-      midday: "Catch up on what came back: truck loot, bounty help, mines, and alliance help.",
-      evening: "Do competitive and alliance tasks when the account is strongest and the group is active.",
-      beforeReset: "Collect anything expiring: loot, chests, battle pass, rewards, and remaining objectives.",
-      night: "Run mines, long marches, and prep before letting the accounts sleep."
+    const basePack = {
+      nativeName: "English",
+      categories: [
+        ["daily", "Daily"],
+        ["weekly", "Weekly"],
+        ["event", "Event"]
+      ],
+      moments: [
+        ["all", "All"],
+        ["reset", "After reset"],
+        ["midday", "Midday"],
+        ["evening", "Evening"],
+        ["beforeReset", "Before reset"],
+        ["night", "Before night"]
+      ],
+      momentAdvice: {
+        all: "Full routine view of the selected account.",
+        reset: "Grab logins, shop points, fresh tasks, bounties, and truck departures.",
+        midday: "Catch up on what came back: truck loot, bounty help, mines, and alliance help.",
+        evening: "Do competitive and alliance tasks when the account is strongest and the group is active.",
+        beforeReset: "Collect anything expiring: loot, chests, battle pass, rewards, and remaining objectives.",
+        night: "Run mines, long marches, and prep before letting the accounts sleep."
+      },
+      priorityLabel: { high: "High", mid: "Medium", low: "Low" },
+      accountLabel: { main: "Main account", farm1: "El dragon", farm2: "mini wolfson" },
+      weekdayLabel: {
+        1: "Monday",
+        2: "Tuesday",
+        3: "Wednesday",
+        4: "Thursday",
+        5: "Friday",
+        6: "Saturday",
+        7: "Sunday"
+      },
+      prepAdvice: {
+        "Shelter Upgrade": "Keep building and upgrading actions for this slot.",
+        "Age of Science": "Start or finish research during this slot.",
+        "Mod Vehicle Boost": "Reserve vehicle and mod actions for this slot.",
+        "Hero Progression": "Save shards, hero XP, and hero upgrades for this slot.",
+        "Army Expansion": "Reserve training, promotions, and army actions for this slot."
+      },
+      prepThemeLabel: {
+        "Shelter Upgrade": "Shelter upgrade",
+        "Age of Science": "Age of Science",
+        "Mod Vehicle Boost": "Vehicle mod boost",
+        "Hero Progression": "Hero progression",
+        "Army Expansion": "Army expansion"
+      },
+      allianceScoreLabel: "Alliance duel",
+      ui: {
+        appTitle: "Last Z - 3-Account Manager",
+        appSubtitle: "Plan routines, track progress, and never forget the important tasks on each account.",
+        today: "Today",
+        dailyTab: "Today",
+        allianceTab: "Alliance",
+        movementsTab: "Movements",
+        language: "Language",
+        remainingToday: "remaining today",
+        day: "Day",
+        currentRoutine: "Full routine",
+        serverReset: "Server reset:",
+        toDoPrefix: "To do:",
+        heroCap: "hero cap",
+        buildings: "Buildings",
+        resources: "Resources",
+        quickTitle: "Quick actions",
+        resetTime: "Server reset time",
+        fullPrepDay: "Full Prep day",
+        taskName: "Task",
+        taskPlaceholder: "Ex: collect resources",
+        taskCategory: "Category",
+        taskMoment: "Suggested moment",
+        taskPriority: "Priority",
+        taskTime: "Time",
+        addTask: "+ Add",
+        focusTitle: "What to do now",
+        todayProgressTitle: "Today's progress by account",
+        prepTitle: "Full Prep - current slot",
+        currentSlot: "Current slot",
+        nextSlot: "Next slot",
+        advice: "Advice",
+        sourceTitle: "Last Z sources & data",
+        hqLevel: "HQ level",
+        tankTitle: "Tank / Vehicle Mods",
+        researchTitle: "Research to prioritize",
+        researchText: "The Google Sheet shows that Field Research requires New Home 100%, Elite Troops 100%, Military Strategies 40%, and Siege to Seize 100%.",
+        integrationTitle: "Next useful integration",
+        integrationText: "Turn Research/Hero/Equipment costs into built-in calculators, one by one, to avoid a cluttered interface.",
+        allianceTitle: "Alliance - contributions",
+        allianceSearch: "Search the table",
+        allianceSearchPlaceholder: "Name, rank, score, arena, contribution...",
+        allianceHint: "Search scans all visible columns.",
+        movementsTitle: "Movements - top 100 TMZ1",
+        movementsCutoff: "global contribution cutoff",
+        movementsNote: "The top 100 players by global contribution must stay in TMZ1. The players listed below are the ones that should switch to restore this split.",
+        movementsUpTitle: "TMZ2 → TMZ1",
+        movementsDownTitle: "TMZ1 → TMZ2",
+        editTitle: "Edit task",
+        cancel: "Cancel",
+        save: "Save",
+        membersListed: "members listed",
+        currentWeekScore: "current week's total score",
+        topContributor: "top contributor",
+        scoreFilled: "3-week score filled in",
+        arenaFilled: "arena power filled in",
+        targetPlayers: "target players TMZ1",
+        noResults: "No results for this search.",
+        noUpward: "No upward movement.",
+        noDownward: "No downward movement.",
+        noTasks: "No tasks",
+        nothingToDo: "Nothing to do in this filter",
+        changeMoment: "Change the moment or account to see the next action.",
+        doneAll: "Done on all 3 accounts",
+        done: "Done",
+        action: "Action",
+        tasksCompleted: "tasks completed",
+        leftToDo: "left to do",
+        highPriorities: "high priorities",
+        progress: "progress",
+        member: "Member",
+        current: "Current",
+        target: "Target",
+        allianceDuelScore: "Alliance duel score",
+        arenaPower: ui.arenaPower,
+        power: "Power",
+        globalContribution: "Global contribution",
+        prepDefaultAdvice: "Prepare the theme actions before the slot."
+      }
     };
-    const priorityLabel = { high: "High", mid: "Medium", low: "Low" };
-    const accountLabel = {
-      main: "Main account",
-      farm1: "El dragon",
-      farm2: "mini wolfson"
+    const localePacks = {
+      en: basePack,
+      fr: {
+        ...basePack,
+        nativeName: "Français",
+        categories: [["daily", "Quotidien"], ["weekly", "Hebdo"], ["event", "Événement"]],
+        moments: [["all", "Tous"], ["reset", "Après reset"], ["midday", "Midi"], ["evening", "Soir"], ["beforeReset", "Avant reset"], ["night", "Nuit"]],
+        momentAdvice: {
+          all: "Vue d'ensemble de la routine du compte sélectionné.",
+          reset: "Récupère les connexions, points boutique, nouvelles tâches, primes et départs de camions.",
+          midday: "Rattrape ce qui est revenu: butin camion, aide prime, mines et aide d'alliance.",
+          evening: "Fais les tâches compétitives et d'alliance quand le compte est le plus fort et que le groupe est actif.",
+          beforeReset: "Récupère tout ce qui expire: butin, coffres, battle pass, récompenses et objectifs restants.",
+          night: "Lance les mines, longues marches et la préparation avant de laisser les comptes dormir."
+        },
+        priorityLabel: { high: "Haute", mid: "Moyenne", low: "Basse" },
+        accountLabel: { main: "Compte principal", farm1: "El dragon", farm2: "mini wolfson" },
+        weekdayLabel: { 1: "Lundi", 2: "Mardi", 3: "Mercredi", 4: "Jeudi", 5: "Vendredi", 6: "Samedi", 7: "Dimanche" },
+        prepAdvice: {
+          "Shelter Upgrade": "Garde les améliorations et constructions pour ce créneau.",
+          "Age of Science": "Commence ou termine les recherches sur ce créneau.",
+          "Mod Vehicle Boost": "Réserve les actions véhicules et mods pour ce créneau.",
+          "Hero Progression": "Garde les fragments, XP héros et améliorations héros pour ce créneau.",
+          "Army Expansion": "Réserve la formation, les promotions et les actions d'armée pour ce créneau."
+        },
+        prepThemeLabel: {
+          "Shelter Upgrade": "Amélioration de l'abri",
+          "Age of Science": "Ère de la science",
+          "Mod Vehicle Boost": "Boost des mods véhicule",
+          "Hero Progression": "Progression des héros",
+          "Army Expansion": "Expansion de l'armée"
+        },
+        allianceScoreLabel: "Duel d'alliance",
+        ui: {
+          appTitle: "Last Z - Gestionnaire de 3 comptes",
+          appSubtitle: "Planifie les routines, suis la progression et n'oublie jamais les tâches importantes de chaque compte.",
+          today: "Aujourd'hui",
+          dailyTab: "Aujourd'hui",
+          allianceTab: "Alliance",
+          movementsTab: "Mouvements",
+          language: "Langue",
+          remainingToday: "restant aujourd'hui",
+          day: "Jour",
+          currentRoutine: "Routine complète",
+          serverReset: "Reset serveur:",
+          toDoPrefix: "À faire:",
+          heroCap: "capacité héros",
+          buildings: "Bâtiments",
+          resources: "Ressources",
+          quickTitle: "Actions rapides",
+          resetTime: "Heure de reset serveur",
+          fullPrepDay: "Jour Full Prep",
+          taskName: "Tâche",
+          taskPlaceholder: "Ex: collecter des ressources",
+          taskCategory: "Catégorie",
+          taskMoment: "Moment suggéré",
+          taskPriority: "Priorité",
+          taskTime: "Heure",
+          addTask: "+ Ajouter",
+          focusTitle: "Que faire maintenant",
+          todayProgressTitle: "Progression du jour par compte",
+          prepTitle: "Full Prep - créneau actuel",
+          currentSlot: "Créneau actuel",
+          nextSlot: "Créneau suivant",
+          advice: "Conseil",
+          sourceTitle: "Sources et données Last Z",
+          hqLevel: "Niveau HQ",
+          tankTitle: "Tank / Mods véhicule",
+          researchTitle: "Recherche à prioriser",
+          researchText: "Le Google Sheet montre que Field Research demande New Home 100%, Elite Troops 100%, Military Strategies 40% et Siege to Seize 100%.",
+          integrationTitle: "Prochaine intégration utile",
+          integrationText: "Transformer les coûts Recherche/Héros/Équipement en calculateurs intégrés, un par un, pour éviter une interface chargée.",
+          allianceTitle: "Alliance - contributions",
+          allianceSearch: "Rechercher dans le tableau",
+          allianceSearchPlaceholder: "Nom, rank, score, arène, contribution...",
+          allianceHint: "La recherche parcourt toutes les colonnes visibles.",
+          movementsTitle: "Mouvements - top 100 TMZ1",
+          movementsCutoff: "seuil de contribution globale",
+          movementsNote: "Les 100 meilleurs joueurs selon la contribution globale doivent rester dans TMZ1. Les joueurs listés ci-dessous doivent changer de groupe pour rétablir ce partage.",
+          movementsUpTitle: "TMZ2 → TMZ1",
+          movementsDownTitle: "TMZ1 → TMZ2",
+          editTitle: "Modifier la tâche",
+          cancel: "Annuler",
+          save: "Enregistrer",
+          membersListed: "membres listés",
+          currentWeekScore: "score total de la semaine en cours",
+          topContributor: "meilleur contributeur",
+          scoreFilled: "score sur 3 semaines rempli",
+          arenaFilled: "puissance d'arène renseignée",
+          targetPlayers: "joueurs cibles TMZ1",
+          noResults: "Aucun résultat pour cette recherche.",
+          noUpward: "Aucun mouvement à monter.",
+          noDownward: "Aucun mouvement à descendre.",
+          noTasks: "Aucune tâche",
+          nothingToDo: "Rien à faire dans ce filtre",
+          changeMoment: "Change le moment ou le compte pour voir la prochaine action.",
+          doneAll: "Fait sur les 3 comptes",
+          done: "Fait",
+          action: "Action",
+          tasksCompleted: "tâches terminées",
+          leftToDo: "à faire",
+          highPriorities: "priorités fortes",
+          progress: "progression",
+          member: "Membre",
+          current: "Actuelle",
+          target: "Cible",
+          allianceDuelScore: "Score duel d'alliance",
+          arenaPower: "Puissance en arène",
+          power: "Puissance",
+          globalContribution: "Contribution globale",
+          prepDefaultAdvice: "Prépare les actions du thème avant le créneau."
+        }
+      },
+      es: {
+        ...basePack,
+        nativeName: "Español",
+        categories: [["daily", "Diario"], ["weekly", "Semanal"], ["event", "Evento"]],
+        moments: [["all", "Todo"], ["reset", "Tras reset"], ["midday", "Mediodía"], ["evening", "Tarde"], ["beforeReset", "Antes de reset"], ["night", "Noche"]],
+        priorityLabel: { high: "Alta", mid: "Media", low: "Baja" },
+        accountLabel: { main: "Cuenta principal", farm1: "El dragon", farm2: "mini wolfson" },
+        weekdayLabel: { 1: "Lunes", 2: "Martes", 3: "Miércoles", 4: "Jueves", 5: "Viernes", 6: "Sábado", 7: "Domingo" },
+        allianceScoreLabel: "Duelo de alianza",
+        ui: {
+          ...basePack.ui,
+          appTitle: "Last Z - Gestor de 3 cuentas",
+          appSubtitle: "Planifica rutinas, sigue el progreso y no olvides las tareas importantes de cada cuenta.",
+          today: "Hoy",
+          dailyTab: "Hoy",
+          allianceTab: "Alianza",
+          movementsTab: "Movimientos",
+          language: "Idioma",
+          remainingToday: "restante hoy",
+          day: "Día",
+          currentRoutine: "Rutina completa",
+          serverReset: "Reset del servidor:",
+          toDoPrefix: "Por hacer:",
+          heroCap: "límite de héroes",
+          buildings: "Edificios",
+          resources: "Recursos",
+          quickTitle: "Acciones rápidas",
+          resetTime: "Hora de reset del servidor",
+          fullPrepDay: "Día de Full Prep",
+          taskName: "Tarea",
+          taskPlaceholder: "Ej: recoger recursos",
+          taskCategory: "Categoría",
+          taskMoment: "Momento sugerido",
+          taskPriority: "Prioridad",
+          taskTime: "Hora",
+          addTask: "+ Añadir",
+          focusTitle: "Qué hacer ahora",
+          todayProgressTitle: "Progreso de hoy por cuenta",
+          prepTitle: "Full Prep - franja actual",
+          currentSlot: "Franja actual",
+          nextSlot: "Franja siguiente",
+          advice: "Consejo",
+          sourceTitle: "Fuentes y datos Last Z",
+          hqLevel: "Nivel HQ",
+          tankTitle: "Tank / Mods de vehículo",
+          researchTitle: "Investigación a priorizar",
+          researchText: "La hoja de cálculo muestra que Field Research requiere New Home 100%, Elite Troops 100%, Military Strategies 40% y Siege to Seize 100%.",
+          integrationTitle: "Próxima integración útil",
+          integrationText: "Convertir los costes de Investigación/Héroe/Equipo en calculadoras integradas, una por una, para evitar una interfaz recargada.",
+          allianceTitle: "Alianza - contribuciones",
+          allianceSearch: "Buscar en la tabla",
+          allianceSearchPlaceholder: "Nombre, rank, score, arena, contribution...",
+          allianceHint: "La búsqueda recorre todas las columnas visibles.",
+          movementsTitle: "Movimientos - top 100 TMZ1",
+          movementsCutoff: "corte de contribución global",
+          movementsNote: "Los 100 mejores jugadores por contribución global deben quedarse en TMZ1. Los jugadores de abajo deben cambiar para restaurar el reparto.",
+          movementsUpTitle: "TMZ2 → TMZ1",
+          movementsDownTitle: "TMZ1 → TMZ2",
+          editTitle: "Editar tarea",
+          cancel: "Cancelar",
+          save: "Guardar",
+          membersListed: "miembros listados",
+          currentWeekScore: "puntuación total de la semana actual",
+          topContributor: "mejor contribuidor",
+          scoreFilled: "puntuación de 3 semanas completada",
+          arenaFilled: "poder de arena completado",
+          targetPlayers: "jugadores objetivo TMZ1",
+          noResults: "No hay resultados para esta búsqueda.",
+          noUpward: "No hay movimientos hacia arriba.",
+          noDownward: "No hay movimientos hacia abajo.",
+          noTasks: "No hay tareas",
+          nothingToDo: "Nada que hacer en este filtro",
+          changeMoment: "Cambia el momento o la cuenta para ver la siguiente acción.",
+          doneAll: "Hecho en las 3 cuentas",
+          done: "Hecho",
+          action: "Acción",
+          tasksCompleted: "tareas completadas",
+          leftToDo: "por hacer",
+          highPriorities: "prioridades altas",
+          progress: "progreso",
+          member: "Miembro",
+          current: "Actual",
+          target: "Objetivo",
+          allianceDuelScore: "Puntuación de duelo de alianza",
+          arenaPower: "Poder de arena",
+          power: "Poder",
+          globalContribution: "Contribución global",
+          prepDefaultAdvice: "Prepara las acciones del tema antes de la franja."
+        }
+      },
+      it: {
+        ...basePack,
+        nativeName: "Italiano",
+        categories: [["daily", "Giornaliero"], ["weekly", "Settimanale"], ["event", "Evento"]],
+        moments: [["all", "Tutto"], ["reset", "Dopo reset"], ["midday", "Mezzogiorno"], ["evening", "Sera"], ["beforeReset", "Prima del reset"], ["night", "Notte"]],
+        priorityLabel: { high: "Alta", mid: "Media", low: "Bassa" },
+        accountLabel: { main: "Account principale", farm1: "El dragon", farm2: "mini wolfson" },
+        weekdayLabel: { 1: "Lunedì", 2: "Martedì", 3: "Mercoledì", 4: "Giovedì", 5: "Venerdì", 6: "Sabato", 7: "Domenica" },
+        allianceScoreLabel: "Duello alleanza",
+        ui: {
+          ...basePack.ui,
+          appTitle: "Last Z - Gestore di 3 account",
+          appSubtitle: "Pianifica routine, segui i progressi e non dimenticare le attività importanti di ogni account.",
+          today: "Oggi",
+          dailyTab: "Oggi",
+          allianceTab: "Alleanza",
+          movementsTab: "Movimenti",
+          language: "Lingua",
+          remainingToday: "rimanenti oggi",
+          day: "Giorno",
+          currentRoutine: "Routine completa",
+          serverReset: "Reset server:",
+          toDoPrefix: "Da fare:",
+          heroCap: "limite eroi",
+          buildings: "Edifici",
+          resources: "Risorse",
+          quickTitle: "Azioni rapide",
+          resetTime: "Ora di reset server",
+          fullPrepDay: "Giorno Full Prep",
+          taskName: "Attività",
+          taskPlaceholder: "Es: raccogli risorse",
+          taskCategory: "Categoria",
+          taskMoment: "Momento suggerito",
+          taskPriority: "Priorità",
+          taskTime: "Ora",
+          addTask: "+ Aggiungi",
+          focusTitle: "Cosa fare ora",
+          todayProgressTitle: "Progresso di oggi per account",
+          prepTitle: "Full Prep - slot attuale",
+          currentSlot: "Slot attuale",
+          nextSlot: "Prossimo slot",
+          advice: "Consiglio",
+          sourceTitle: "Fonti e dati Last Z",
+          hqLevel: "Livello HQ",
+          tankTitle: "Tank / Mod veicolo",
+          researchTitle: "Ricerca da prioritizzare",
+          researchText: "Il foglio di calcolo mostra che Field Research richiede New Home 100%, Elite Troops 100%, Military Strategies 40% e Siege to Seize 100%.",
+          integrationTitle: "Prossima integrazione utile",
+          integrationText: "Trasformare i costi di Ricerca/Eroe/Equipaggiamento in calcolatori integrati, uno alla volta, per evitare un'interfaccia affollata.",
+          allianceTitle: "Alleanza - contributi",
+          allianceSearch: "Cerca nella tabella",
+          allianceSearchPlaceholder: "Nome, rank, score, arena, contribution...",
+          allianceHint: "La ricerca scansiona tutte le colonne visibili.",
+          movementsTitle: "Movimenti - top 100 TMZ1",
+          movementsCutoff: "soglia contributo globale",
+          movementsNote: "I 100 migliori giocatori per contributo globale devono restare in TMZ1. I giocatori elencati sotto devono cambiare per ripristinare la divisione.",
+          movementsUpTitle: "TMZ2 → TMZ1",
+          movementsDownTitle: "TMZ1 → TMZ2",
+          editTitle: "Modifica attività",
+          cancel: "Annulla",
+          save: "Salva",
+          membersListed: "membri elencati",
+          currentWeekScore: "punteggio totale della settimana corrente",
+          topContributor: "miglior contributore",
+          scoreFilled: "punteggio di 3 settimane compilato",
+          arenaFilled: "potere arena compilato",
+          targetPlayers: "giocatori target TMZ1",
+          noResults: "Nessun risultato per questa ricerca.",
+          noUpward: "Nessun movimento verso l'alto.",
+          noDownward: "Nessun movimento verso il basso.",
+          noTasks: "Nessuna attività",
+          nothingToDo: "Niente da fare in questo filtro",
+          changeMoment: "Cambia momento o account per vedere la prossima azione.",
+          doneAll: "Fatto su tutti e 3 gli account",
+          done: "Fatto",
+          action: "Azione",
+          tasksCompleted: "attività completate",
+          leftToDo: "da fare",
+          highPriorities: "priorità alte",
+          progress: "progresso",
+          member: "Membro",
+          current: "Attuale",
+          target: "Obiettivo",
+          allianceDuelScore: "Punteggio duello alleanza",
+          arenaPower: "Potenza arena",
+          power: "Potenza",
+          globalContribution: "Contributo globale",
+          prepDefaultAdvice: "Prepara le azioni del tema prima dello slot."
+        }
+      },
+      pt: {
+        ...basePack,
+        nativeName: "Português",
+        categories: [["daily", "Diário"], ["weekly", "Semanal"], ["event", "Evento"]],
+        moments: [["all", "Tudo"], ["reset", "Após reset"], ["midday", "Meio-dia"], ["evening", "Fim de tarde"], ["beforeReset", "Antes do reset"], ["night", "Noite"]],
+        priorityLabel: { high: "Alta", mid: "Média", low: "Baixa" },
+        accountLabel: { main: "Conta principal", farm1: "El dragon", farm2: "mini wolfson" },
+        weekdayLabel: { 1: "Segunda", 2: "Terça", 3: "Quarta", 4: "Quinta", 5: "Sexta", 6: "Sábado", 7: "Domingo" },
+        allianceScoreLabel: "Duelo de aliança",
+        ui: {
+          ...basePack.ui,
+          appTitle: "Last Z - Gestor de 3 contas",
+          appSubtitle: "Planeia rotinas, acompanha o progresso e não te esqueças das tarefas importantes de cada conta.",
+          today: "Hoje",
+          dailyTab: "Hoje",
+          allianceTab: "Aliança",
+          movementsTab: "Movimentos",
+          language: "Idioma",
+          remainingToday: "restante hoje",
+          day: "Dia",
+          currentRoutine: "Rotina completa",
+          serverReset: "Reset do servidor:",
+          toDoPrefix: "A fazer:",
+          heroCap: "limite de heróis",
+          buildings: "Edifícios",
+          resources: "Recursos",
+          quickTitle: "Ações rápidas",
+          resetTime: "Hora de reset do servidor",
+          fullPrepDay: "Dia Full Prep",
+          taskName: "Tarefa",
+          taskPlaceholder: "Ex: recolher recursos",
+          taskCategory: "Categoria",
+          taskMoment: "Momento sugerido",
+          taskPriority: "Prioridade",
+          taskTime: "Hora",
+          addTask: "+ Adicionar",
+          focusTitle: "O que fazer agora",
+          todayProgressTitle: "Progresso de hoje por conta",
+          prepTitle: "Full Prep - slot atual",
+          currentSlot: "Slot atual",
+          nextSlot: "Próximo slot",
+          advice: "Conselho",
+          sourceTitle: "Fontes e dados Last Z",
+          hqLevel: "Nível HQ",
+          tankTitle: "Tank / Mods de veículo",
+          researchTitle: "Pesquisa a priorizar",
+          researchText: "A folha de cálculo mostra que Field Research requer New Home 100%, Elite Troops 100%, Military Strategies 40% e Siege to Seize 100%.",
+          integrationTitle: "Próxima integração útil",
+          integrationText: "Transformar os custos de Pesquisa/Herói/Equipamento em calculadoras integradas, uma a uma, para evitar uma interface carregada.",
+          allianceTitle: "Aliança - contribuições",
+          allianceSearch: "Procurar na tabela",
+          allianceSearchPlaceholder: "Nome, rank, score, arena, contribution...",
+          allianceHint: "A pesquisa percorre todas as colunas visíveis.",
+          movementsTitle: "Movimentos - top 100 TMZ1",
+          movementsCutoff: "corte de contribuição global",
+          movementsNote: "Os 100 melhores jogadores por contribuição global devem ficar em TMZ1. Os jogadores abaixo devem mudar para restaurar a divisão.",
+          movementsUpTitle: "TMZ2 → TMZ1",
+          movementsDownTitle: "TMZ1 → TMZ2",
+          editTitle: "Editar tarefa",
+          cancel: "Cancelar",
+          save: "Guardar",
+          membersListed: "membros listados",
+          currentWeekScore: "pontuação total da semana atual",
+          topContributor: "melhor contribuidor",
+          scoreFilled: "pontuação de 3 semanas preenchida",
+          arenaFilled: "poder de arena preenchido",
+          targetPlayers: "jogadores alvo TMZ1",
+          noResults: "Sem resultados para esta pesquisa.",
+          noUpward: "Sem movimentos para cima.",
+          noDownward: "Sem movimentos para baixo.",
+          noTasks: "Sem tarefas",
+          nothingToDo: "Nada a fazer neste filtro",
+          changeMoment: "Muda o momento ou a conta para veres a próxima ação.",
+          doneAll: "Feito nas 3 contas",
+          done: "Feito",
+          action: "Ação",
+          tasksCompleted: "tarefas concluídas",
+          leftToDo: "por fazer",
+          highPriorities: "prioridades altas",
+          progress: "progresso",
+          member: "Membro",
+          current: "Atual",
+          target: "Alvo",
+          allianceDuelScore: "Pontuação de duelo da aliança",
+          arenaPower: "Poder de arena",
+          power: "Poder",
+          globalContribution: "Contribuição global",
+          prepDefaultAdvice: "Prepara as ações do tema antes do slot."
+        }
+      },
+      ar: {
+        ...basePack,
+        nativeName: "العربية",
+        categories: [["daily", "يومي"], ["weekly", "أسبوعي"], ["event", "حدث"]],
+        moments: [["all", "الكل"], ["reset", "بعد إعادة الضبط"], ["midday", "الظهر"], ["evening", "المساء"], ["beforeReset", "قبل إعادة الضبط"], ["night", "الليل"]],
+        priorityLabel: { high: "عالية", mid: "متوسطة", low: "منخفضة" },
+        accountLabel: { main: "الحساب الرئيسي", farm1: "El dragon", farm2: "mini wolfson" },
+        weekdayLabel: { 1: "الاثنين", 2: "الثلاثاء", 3: "الأربعاء", 4: "الخميس", 5: "الجمعة", 6: "السبت", 7: "الأحد" },
+        allianceScoreLabel: "مبارزة التحالف",
+        ui: {
+          ...basePack.ui,
+          appTitle: "Last Z - مدير 3 حسابات",
+          appSubtitle: "خطط الروتين، تابع التقدم، ولا تنس المهام المهمة في كل حساب.",
+          today: "اليوم",
+          dailyTab: "اليوم",
+          allianceTab: "التحالف",
+          movementsTab: "الحركات",
+          language: "اللغة",
+          remainingToday: "متبقٍ اليوم",
+          day: "يوم",
+          currentRoutine: "الروتين الكامل",
+          serverReset: "إعادة ضبط الخادم:",
+          toDoPrefix: "المطلوب:",
+          heroCap: "حد الأبطال",
+          buildings: "المباني",
+          resources: "الموارد",
+          quickTitle: "إجراءات سريعة",
+          resetTime: "وقت إعادة ضبط الخادم",
+          fullPrepDay: "يوم Full Prep",
+          taskName: "المهمة",
+          taskPlaceholder: "مثال: اجمع الموارد",
+          taskCategory: "الفئة",
+          taskMoment: "الوقت المقترح",
+          taskPriority: "الأولوية",
+          taskTime: "الوقت",
+          addTask: "+ إضافة",
+          focusTitle: "ماذا تفعل الآن",
+          todayProgressTitle: "تقدم اليوم حسب الحساب",
+          prepTitle: "Full Prep - الخانة الحالية",
+          currentSlot: "الخانة الحالية",
+          nextSlot: "الخانة التالية",
+          advice: "نصيحة",
+          sourceTitle: "مصادر وبيانات Last Z",
+          hqLevel: "مستوى HQ",
+          tankTitle: "Tank / تعديلات المركبات",
+          researchTitle: "الأبحاث ذات الأولوية",
+          researchText: "توضح ورقة Google أن Field Research تتطلب New Home 100% و Elite Troops 100% و Military Strategies 40% و Siege to Seize 100%.",
+          integrationTitle: "التكامل المفيد التالي",
+          integrationText: "حوّل تكاليف البحث/الأبطال/المعدات إلى حاسبات مدمجة، واحدة تلو الأخرى، لتجنب واجهة مزدحمة.",
+          allianceTitle: "التحالف - المساهمات",
+          allianceSearch: "ابحث في الجدول",
+          allianceSearchPlaceholder: "الاسم، الرتبة، النقاط، الساحة، المساهمة...",
+          allianceHint: "البحث يفحص كل الأعمدة المرئية.",
+          movementsTitle: "الحركات - أفضل 100 TMZ1",
+          movementsCutoff: "حد المساهمة العالمية",
+          movementsNote: "يجب أن يبقى أفضل 100 لاعب حسب المساهمة العالمية في TMZ1. اللاعبون المدرجون أدناه يجب أن يتغيروا لاستعادة هذا التقسيم.",
+          movementsUpTitle: "TMZ2 → TMZ1",
+          movementsDownTitle: "TMZ1 → TMZ2",
+          editTitle: "تعديل المهمة",
+          cancel: "إلغاء",
+          save: "حفظ",
+          membersListed: "الأعضاء المدرجون",
+          currentWeekScore: "إجمالي نقاط الأسبوع الحالي",
+          topContributor: "أفضل مساهم",
+          scoreFilled: "نتائج 3 أسابيع مكتملة",
+          arenaFilled: "قوة الساحة مكتملة",
+          targetPlayers: "اللاعبون المستهدفون TMZ1",
+          noResults: "لا توجد نتائج لهذا البحث.",
+          noUpward: "لا توجد حركة للأعلى.",
+          noDownward: "لا توجد حركة للأسفل.",
+          noTasks: "لا توجد مهام",
+          nothingToDo: "لا شيء للقيام به في هذا الفلتر",
+          changeMoment: "غيّر الوقت أو الحساب لرؤية الإجراء التالي.",
+          doneAll: "تم على الحسابات الثلاثة",
+          done: "تم",
+          action: "إجراء",
+          tasksCompleted: "مهام مكتملة",
+          leftToDo: "متبقي",
+          highPriorities: "أولويات عالية",
+          progress: "التقدم",
+          member: "عضو",
+          current: "الحالي",
+          target: "الهدف",
+          allianceDuelScore: "نقاط مبارزة التحالف",
+          arenaPower: "قوة الساحة",
+          power: "القوة",
+          globalContribution: "المساهمة العامة",
+          prepDefaultAdvice: "جهّز إجراءات الموضوع قبل الخانة."
+        }
+      }
     };
-    const weekdayLabel = {
-      1: "Monday",
-      2: "Tuesday",
-      3: "Wednesday",
-      4: "Thursday",
-      5: "Friday",
-      6: "Saturday",
-      7: "Sunday"
-    };
+    let currentLanguage = "en";
+    let categories = localePacks.en.categories;
+    let moments = localePacks.en.moments;
+    let momentLabel = Object.fromEntries(moments);
+    let momentAdvice = localePacks.en.momentAdvice;
+    let priorityLabel = localePacks.en.priorityLabel;
+    let accountLabel = localePacks.en.accountLabel;
+    let weekdayLabel = localePacks.en.weekdayLabel;
+    let prepAdvice = localePacks.en.prepAdvice;
+    let prepThemeLabel = localePacks.en.prepThemeLabel;
+    let allianceScoreLabel = localePacks.en.allianceScoreLabel;
+    let ui = basePack.ui;
+    const localeMap = { en: "en-US", fr: "fr-FR", es: "es-ES", it: "it-IT", pt: "pt-PT", ar: "ar-EG" };
     const fullPrepTimes = ["04:00", "08:00", "12:00", "16:00", "20:00", "00:00"];
     const fullPrepSchedule = {
       1: ["Shelter Upgrade", "Age of Science", "Mod Vehicle Boost", "Hero Progression", "Army Expansion", "Mod Vehicle Boost"],
@@ -1314,20 +1917,6 @@
       5: ["Mod Vehicle Boost", "Shelter Upgrade", "Army Expansion", "Age of Science", "Hero Progression", "Army Expansion"],
       6: ["Age of Science", "Mod Vehicle Boost", "Hero Progression", "Shelter Upgrade", "Army Expansion", "Hero Progression"],
       7: ["Mod Vehicle Boost", "Shelter Upgrade", "Army Expansion", "Age of Science", "Hero Progression", "Army Expansion"]
-    };
-    const prepAdvice = {
-      "Shelter Upgrade": "Keep building and upgrading actions for this slot.",
-      "Age of Science": "Start or finish research during this slot.",
-      "Mod Vehicle Boost": "Reserve vehicle and mod actions for this slot.",
-      "Hero Progression": "Save shards, hero XP, and hero upgrades for this slot.",
-      "Army Expansion": "Reserve training, promotions, and army actions for this slot."
-    };
-    const prepThemeLabel = {
-      "Shelter Upgrade": "Shelter upgrade",
-      "Age of Science": "Age of Science",
-      "Mod Vehicle Boost": "Vehicle mod boost",
-      "Hero Progression": "Hero progression",
-      "Army Expansion": "Army expansion"
     };
     const hqRequirements = [
       { level: 1, cap: 5, buildings: "None", rss: "Wood 0.012M" },
@@ -1361,7 +1950,6 @@
       ],
       lastMilestone: "Elite Trunk Modification Lv240"
     };
-    const allianceScoreLabel = "Alliance duel";
     const tmz1Members = [
       { rank: 1, name: "HaMeeD¹", scores: [319655996, null, null] },
       { rank: 2, name: "Wolfson490", scores: [304110509, null, null] },
@@ -1767,6 +2355,7 @@
     let activeMoment = state.activeMoment || suggestedMoment(state.settings?.resetTime);
     let activeToolTab = state.activeToolTab || "daily";
     let focusTaskId = null;
+    currentLanguage = state.settings?.language || "en";
 
     const tabs = document.querySelector("#accountTabs");
     const boards = document.querySelector("#boards");
@@ -1783,18 +2372,13 @@
     const allianceTab = document.querySelector("#allianceTab");
     const movementsTab = document.querySelector("#movementsTab");
     const allianceSearch = document.querySelector("#allianceSearch");
+    const languageSelect = document.querySelector("#languageSelect");
     let allianceSortState = { key: "averageContribution", direction: "desc" };
 
-    document.querySelector("#todayLabel").textContent = new Intl.DateTimeFormat("en-US", {
-      weekday: "long",
-      day: "2-digit",
-      month: "long"
-    }).format(new Date());
     resetTime.value = state.settings?.resetTime || defaultResetTime;
-    fullPrepDay.value = currentFullPrepDay(resetTime.value);
-    fillMomentSelect(document.querySelector("#taskMoment"));
-    fillMomentSelect(document.querySelector("#editMoment"));
-    fillHqSelect();
+    languageSelect.innerHTML = Object.entries(localePacks).map(([code, pack]) => `<option value="${code}">${pack.nativeName}</option>`).join("");
+    languageSelect.value = currentLanguage;
+    applyLanguage(currentLanguage);
     switchToolTab(activeToolTab);
 
     function makeTask(task) {
@@ -1820,8 +2404,9 @@
             migrateAccountNames(parsed.accounts);
             migrateTaskNames(parsed.accounts);
             migrateTaskScheduling(parsed.accounts);
-            if (!parsed.settings) parsed.settings = { resetTime: defaultResetTime, fullPrepDay: currentFullPrepDay(defaultResetTime) };
+            if (!parsed.settings) parsed.settings = { resetTime: defaultResetTime, fullPrepDay: currentFullPrepDay(defaultResetTime), language: "en" };
             if (!parsed.settings.resetTime || parsed.settings.resetTime === "00:00") parsed.settings.resetTime = defaultResetTime;
+            if (!parsed.settings.language) parsed.settings.language = "en";
             const todayKey = currentGameDayKey(parsed.settings.resetTime);
             const shouldResetToday = parsed.settings.todayPlanKey !== todayKey;
             const shouldRefreshPlan = parsed.settings.todayPlanVersion !== todayPlanVersion;
@@ -1842,6 +2427,7 @@
         settings: {
           resetTime: defaultResetTime,
           fullPrepDay: currentFullPrepDay(defaultResetTime),
+          language: "en",
           todayPlanKey: currentGameDayKey(defaultResetTime),
           todayPlanVersion
         },
@@ -2004,6 +2590,7 @@
       state.settings = {
         resetTime: resetTime.value || defaultResetTime,
         fullPrepDay: fullPrepDay.value || currentFullPrepDay(resetTime.value),
+        language: currentLanguage,
         todayPlanKey: state.settings?.todayPlanKey || currentGameDayKey(resetTime.value),
         todayPlanVersion
       };
@@ -2083,9 +2670,9 @@
         filter.append(button);
       });
       document.querySelector("#nowTitle").textContent = activeMoment === "all"
-        ? "Full routine"
-        : `To do: ${momentLabel[activeMoment]}`;
-      document.querySelector("#nowText").textContent = `${momentAdvice[activeMoment]} Server reset: ${resetTime.value || "00:00"}.`;
+        ? ui.currentRoutine
+        : `${ui.toDoPrefix} ${momentLabel[activeMoment]}`;
+      document.querySelector("#nowText").textContent = `${momentAdvice[activeMoment]} ${ui.serverReset} ${resetTime.value || "00:00"}.`;
     }
 
     function renderSummary() {
@@ -2095,7 +2682,7 @@
       const todo = total - done;
       const high = current.filter(task => !task.done && task.priority === "high").length;
       const percent = total ? Math.round((done / total) * 100) : 0;
-      document.querySelector("#activeAccountName").textContent = `${account().name} - remaining today`;
+      document.querySelector("#activeAccountName").textContent = `${account().name} - ${ui.remainingToday || "remaining today"}`;
       document.querySelector("#statDone").textContent = done;
       document.querySelector("#statTodo").textContent = todo;
       document.querySelector("#statHigh").textContent = high;
@@ -2122,7 +2709,7 @@
         `;
         const list = board.querySelector(".task-list");
         if (!remainingTasks.length) {
-        list.innerHTML = `<div class="empty">No tasks</div>`;
+        list.innerHTML = `<div class="empty">${ui.noTasks}</div>`;
         } else {
           remainingTasks.forEach(task => list.append(renderTask(task)));
         }
@@ -2142,8 +2729,8 @@
       focusTaskId = candidate?.id || null;
       const button = document.querySelector("#focusDoneAll");
       if (!candidate) {
-        document.querySelector("#focusTaskName").textContent = "Nothing to do in this filter";
-        document.querySelector("#focusTaskMeta").textContent = "Change the moment or account to see the next action.";
+        document.querySelector("#focusTaskName").textContent = ui.nothingToDo;
+        document.querySelector("#focusTaskMeta").textContent = ui.changeMoment;
         button.disabled = true;
         return;
       }
@@ -2152,8 +2739,8 @@
       const planItem = scheduledTodayPlanItems().find(item => normalizeTaskName(item.name) === normalizeTaskName(candidate.name));
       const scope = planItem?.accounts.length === 3 ? "All 3 accounts" : account().name;
       document.querySelector("#focusTaskName").textContent = candidate.name;
-      document.querySelector("#focusTaskMeta").textContent = `${scope} · ${momentLabel[candidate.moment]} · priority ${priorityLabel[candidate.priority]}${time}`;
-      button.textContent = planItem?.accounts.length === 3 ? "Done on all 3 accounts" : "Done";
+      document.querySelector("#focusTaskMeta").textContent = `${scope} · ${momentLabel[candidate.moment]} · ${ui.taskPriority.toLowerCase()} ${priorityLabel[candidate.priority]}${time}`;
+      button.textContent = planItem?.accounts.length === 3 ? ui.doneAll : ui.done;
     }
 
     function renderTodayMatrix() {
@@ -2162,11 +2749,11 @@
       const header = `
         <thead>
           <tr>
-            <th class="task-cell">Task</th>
+            <th class="task-cell">${ui.taskName}</th>
             <th>${accountLabel.main}</th>
             <th>${accountLabel.farm1}</th>
             <th>${accountLabel.farm2}</th>
-            <th>Action</th>
+            <th>${ui.action}</th>
           </tr>
         </thead>
       `;
@@ -2248,7 +2835,7 @@
       const nextTheme = fullPrepSchedule[nextSlot.day][nextSlot.index];
       document.querySelector("#prepCurrent").textContent = `${weekdayLabel[activeSlot.day]} ${fullPrepTimes[activeSlot.index]} - ${displayPrepTheme(currentTheme)}`;
       document.querySelector("#prepNext").textContent = `${weekdayLabel[nextSlot.day]} ${fullPrepTimes[nextSlot.index]} - ${displayPrepTheme(nextTheme)}`;
-      document.querySelector("#prepAdvice").textContent = prepAdvice[currentTheme] || "Prepare the theme actions before the slot.";
+      document.querySelector("#prepAdvice").textContent = prepAdvice[currentTheme] || ui.prepDefaultAdvice;
       renderFullPrepTable(activeSlot);
     }
 
@@ -2258,13 +2845,13 @@
 
     function renderFullPrepTable(activeSlot) {
       const table = document.querySelector("#prepTable");
-      const head = `<thead><tr><th>Day</th>${fullPrepTimes.map(time => `<th>${time}</th>`).join("")}</tr></thead>`;
+      const head = `<thead><tr><th>${ui.day}</th>${fullPrepTimes.map(time => `<th>${time}</th>`).join("")}</tr></thead>`;
       const rows = Object.entries(fullPrepSchedule).map(([day, themes]) => {
         const cells = themes.map((theme, index) => {
           const active = Number(day) === activeSlot.day && index === activeSlot.index;
           return `<td class="${active ? "active-slot" : ""}">${displayPrepTheme(theme)}</td>`;
         }).join("");
-        return `<tr><th>${weekdayLabel[day]}<br>Day ${day}</th>${cells}</tr>`;
+        return `<tr><th>${weekdayLabel[day]}<br>${ui.day} ${day}</th>${cells}</tr>`;
       }).join("");
       table.innerHTML = `${head}<tbody>${rows}</tbody>`;
     }
@@ -2312,6 +2899,107 @@
       return hour * 60 + minute;
     }
 
+    function applyLanguage(nextLanguage = currentLanguage) {
+      currentLanguage = localePacks[nextLanguage] ? nextLanguage : "en";
+      const pack = localePacks[currentLanguage] || basePack;
+      ui = pack.ui;
+      categories = pack.categories;
+      moments = pack.moments;
+      momentLabel = Object.fromEntries(moments);
+      momentAdvice = pack.momentAdvice;
+      priorityLabel = pack.priorityLabel;
+      accountLabel = pack.accountLabel;
+      weekdayLabel = pack.weekdayLabel;
+      prepAdvice = pack.prepAdvice;
+      prepThemeLabel = pack.prepThemeLabel;
+      allianceScoreLabel = pack.allianceScoreLabel;
+      document.documentElement.lang = currentLanguage;
+      document.documentElement.dir = currentLanguage === "ar" ? "rtl" : "ltr";
+      languageSelect.value = currentLanguage;
+      document.querySelector("#appTitle").textContent = ui.appTitle;
+      document.querySelector("#appSubtitle").textContent = ui.appSubtitle;
+      document.querySelector("#todayPrefix").textContent = ui.today;
+      document.querySelector("#languageLabel").textContent = ui.language;
+      document.querySelector("#quickTitle").textContent = ui.quickTitle;
+      document.querySelector("#resetTimeLabel").textContent = ui.resetTime;
+      document.querySelector("#fullPrepDayLabel").textContent = ui.fullPrepDay;
+      document.querySelector("#taskNameLabel").textContent = ui.taskName;
+      document.querySelector("#taskName").placeholder = ui.taskPlaceholder;
+      document.querySelector("#taskCategoryLabel").textContent = ui.taskCategory;
+      document.querySelector("#taskMomentLabel").textContent = ui.taskMoment;
+      document.querySelector("#taskPriorityLabel").textContent = ui.taskPriority;
+      document.querySelector("#taskTimeLabel").textContent = ui.taskTime;
+      document.querySelector("#taskForm button[type='submit']").textContent = ui.addTask;
+      document.querySelector("#focusTitle").textContent = ui.focusTitle;
+      document.querySelector("#todayProgressTitle").textContent = ui.todayProgressTitle;
+      document.querySelector("#prepTitle").textContent = ui.prepTitle;
+      document.querySelector("#prepCurrentLabel").textContent = ui.currentSlot;
+      document.querySelector("#prepNextLabel").textContent = ui.nextSlot;
+      document.querySelector("#prepAdviceTitle").textContent = ui.advice;
+      document.querySelector("#sourceTitle").textContent = ui.sourceTitle;
+      document.querySelector("#hqLevelLabel").textContent = ui.hqLevel;
+      document.querySelector("#tankTitle").textContent = ui.tankTitle;
+      document.querySelector("#researchTitle").textContent = ui.researchTitle;
+      document.querySelector("#researchText").textContent = ui.researchText;
+      document.querySelector("#integrationTitle").textContent = ui.integrationTitle;
+      document.querySelector("#integrationText").textContent = ui.integrationText;
+      document.querySelector("#allianceTitle").textContent = ui.allianceTitle;
+      document.querySelector("#allianceSearchLabel").textContent = ui.allianceSearch;
+      document.querySelector("#allianceSearch").placeholder = ui.allianceSearchPlaceholder;
+      document.querySelector("#allianceHint").textContent = ui.allianceHint;
+      document.querySelector("#movementsTitle").textContent = ui.movementsTitle;
+      document.querySelector("#movementsCutoffLabel").textContent = ui.movementsCutoff;
+      document.querySelector("#movementsNote").textContent = ui.movementsNote;
+      document.querySelector("#movementsUpTitle").textContent = ui.movementsUpTitle;
+      document.querySelector("#movementsDownTitle").textContent = ui.movementsDownTitle;
+      document.querySelector("#editTitle").textContent = ui.editTitle;
+      document.querySelector("#editNameLabel").textContent = ui.taskName;
+      document.querySelector("#editCategoryLabel").textContent = ui.taskCategory;
+      document.querySelector("#editMomentLabel").textContent = ui.taskMoment;
+      document.querySelector("#editPriorityLabel").textContent = ui.taskPriority;
+      document.querySelector("#editTimeLabel").textContent = ui.taskTime;
+      document.querySelector("#cancelEdit").textContent = ui.cancel;
+      document.querySelector("#saveEdit").textContent = ui.save;
+      document.querySelector("#dailyTab").textContent = ui.dailyTab;
+      document.querySelector("#allianceTab").textContent = ui.allianceTab;
+      document.querySelector("#movementsTab").textContent = ui.movementsTab;
+      document.querySelector("#statDone + span").textContent = ui.tasksCompleted;
+      document.querySelector("#statTodo + span").textContent = ui.leftToDo;
+      document.querySelector("#statHigh + span").textContent = ui.highPriorities;
+      document.querySelector("#statPercent + span").textContent = ui.progress;
+      document.querySelectorAll(".alliance-summary .stat span").forEach((span, index) => {
+        const labels = [ui.membersListed, ui.currentWeekScore, ui.topContributor, ui.scoreFilled, ui.arenaFilled];
+        span.textContent = labels[index] || span.textContent;
+      });
+      document.querySelectorAll(".movements-summary .stat span").forEach((span, index) => {
+        const labels = [ui.targetPlayers, "TMZ2 → TMZ1", "TMZ1 → TMZ2", ui.movementsCutoff];
+        span.textContent = labels[index] || span.textContent;
+      });
+      document.querySelectorAll(".summary .stat span").forEach((span, index) => {
+        const labels = [ui.tasksCompleted, ui.leftToDo, ui.highPriorities, ui.progress];
+        span.textContent = labels[index] || span.textContent;
+      });
+      document.querySelectorAll(".source-grid .source-card a").forEach((link, index) => {
+        const labels = ["Open Google Sheet", "Open Last Z Helper", "Open calculator"];
+        if (index < labels.length) link.textContent = labels[index];
+      });
+      document.querySelector("#todayLabel").textContent = new Intl.DateTimeFormat(localeMap[currentLanguage], {
+        weekday: "long",
+        day: "2-digit",
+        month: "long"
+      }).format(new Date());
+      fullPrepDay.value = currentFullPrepDay(resetTime.value);
+      fillMomentSelect(document.querySelector("#taskMoment"));
+      fillMomentSelect(document.querySelector("#editMoment"));
+      fillHqSelect();
+      document.querySelector("#taskCategory").innerHTML = categories.map(([key, label]) => `<option value="${key}">${label}</option>`).join("");
+      document.querySelector("#editCategory").innerHTML = categories.map(([key, label]) => `<option value="${key}">${label}</option>`).join("");
+      document.querySelector("#taskPriority").innerHTML = Object.entries(priorityLabel).map(([key, label]) => `<option value="${key}">${label}</option>`).join("");
+      document.querySelector("#editPriority").innerHTML = Object.entries(priorityLabel).map(([key, label]) => `<option value="${key}">${label}</option>`).join("");
+      document.querySelector("#fullPrepDay").innerHTML = Object.entries(weekdayLabel).map(([day, label]) => `<option value="${day}">${label} - ${ui.day} ${day}</option>`).join("");
+      document.querySelector("#momentFilter").setAttribute("aria-label", ui.todayProgressTitle);
+    }
+
     function fillHqSelect() {
       hqLevelSelect.innerHTML = hqRequirements
         .map(item => `<option value="${item.level}">HQ ${item.level}</option>`)
@@ -2321,9 +3009,9 @@
 
     function renderSourceData() {
       const selected = hqRequirements.find(item => String(item.level) === hqLevelSelect.value) || hqRequirements.at(-1);
-      document.querySelector("#hqTitle").textContent = `HQ ${selected.level} - hero cap ${selected.cap}`;
-      document.querySelector("#hqDetails").textContent = `Buildings: ${selected.buildings}. Resources: ${selected.rss}.`;
-      document.querySelector("#tankSummary").textContent = `${tankDataSummary.totalWrenches.toLocaleString("fr-FR")} wrenches total. Special vehicles: ${tankDataSummary.specialVehicles.join(", ")}. Latest milestone: ${tankDataSummary.lastMilestone}.`;
+      document.querySelector("#hqTitle").textContent = `HQ ${selected.level} - ${ui.heroCap || "hero cap"} ${selected.cap}`;
+      document.querySelector("#hqDetails").textContent = `${ui.buildings}: ${selected.buildings}. ${ui.resources}: ${selected.rss}.`;
+      document.querySelector("#tankSummary").textContent = `${tankDataSummary.totalWrenches.toLocaleString(localeMap[currentLanguage])} wrenches total. Special vehicles: ${tankDataSummary.specialVehicles.join(", ")}. Latest milestone: ${tankDataSummary.lastMilestone}.`;
     }
 
     function buildAllianceSnapshot() {
@@ -2392,10 +3080,10 @@
         name: "Member",
         alliance: "Alliance",
         score: allianceScoreLabel,
-        arenaPower: "Puissance en arène",
-        scoreContribution: "Alliance duel %",
-        powerContribution: "Power %",
-        averageContribution: "Global contribution"
+        arenaPower: "Arena power",
+        scoreContribution: `${ui.allianceDuelScore || "Alliance duel score"} %`,
+        powerContribution: `${ui.power || "Power"} %`,
+        averageContribution: ui.globalContribution
       };
       document.querySelector("#allianceTable").innerHTML = `
         <thead>
@@ -2411,7 +3099,7 @@
             <th class="sortable" aria-sort="${allianceSortState.key === "averageContribution" ? sortDirection : "none"}"><button type="button" data-sort-key="averageContribution">${sortLabels.averageContribution}${sortIndicator("averageContribution")}</button></th>
           </tr>
         </thead>
-        <tbody>${rows || `<tr><td colspan="9" class="empty">No results for this search.</td></tr>`}</tbody>
+        <tbody>${rows || `<tr><td colspan="9" class="empty">${ui.noResults}</td></tr>`}</tbody>
       `;
       document.querySelectorAll("#allianceTable [data-sort-key]").forEach(button => {
         button.addEventListener("click", () => {
@@ -2450,30 +3138,30 @@
         <thead>
           <tr>
             <th class="member-rank">#</th>
-            <th class="member-name-head">Member</th>
-            <th class="member-alliance-head">Current</th>
-            <th class="member-alliance-head">Target</th>
-            <th>Alliance duel score</th>
-            <th>Power</th>
-            <th>Global contribution</th>
+            <th class="member-name-head">${ui.member}</th>
+            <th class="member-alliance-head">${ui.current}</th>
+            <th class="member-alliance-head">${ui.target}</th>
+            <th>${ui.allianceDuelScore}</th>
+            <th>${ui.power}</th>
+            <th>${ui.globalContribution}</th>
           </tr>
         </thead>
-        <tbody>${renderRows(promoteToTmz1) || `<tr><td colspan="7" class="empty">No upward movement.</td></tr>`}</tbody>
+        <tbody>${renderRows(promoteToTmz1) || `<tr><td colspan="7" class="empty">${ui.noUpward}</td></tr>`}</tbody>
       `;
 
       document.querySelector("#movementsDownTable").innerHTML = `
         <thead>
           <tr>
             <th class="member-rank">#</th>
-            <th class="member-name-head">Member</th>
-            <th class="member-alliance-head">Current</th>
-            <th class="member-alliance-head">Target</th>
-            <th>Alliance duel score</th>
-            <th>Power</th>
-            <th>Global contribution</th>
+            <th class="member-name-head">${ui.member}</th>
+            <th class="member-alliance-head">${ui.current}</th>
+            <th class="member-alliance-head">${ui.target}</th>
+            <th>${ui.allianceDuelScore}</th>
+            <th>${ui.power}</th>
+            <th>${ui.globalContribution}</th>
           </tr>
         </thead>
-        <tbody>${renderRows(demoteToTmz2) || `<tr><td colspan="7" class="empty">No downward movement.</td></tr>`}</tbody>
+        <tbody>${renderRows(demoteToTmz2) || `<tr><td colspan="7" class="empty">${ui.noDownward}</td></tr>`}</tbody>
       `;
     }
 
@@ -2515,10 +3203,10 @@
           result = compareRankLabels(allianceRankByName[a.name], allianceRankByName[b.name]);
           break;
         case "name":
-          result = a.name.localeCompare(b.name, "fr", { sensitivity: "base" });
+          result = a.name.localeCompare(b.name, currentLanguage, { sensitivity: "base" });
           break;
         case "alliance":
-          result = String(a.alliance || "").localeCompare(String(b.alliance || ""), "fr", { sensitivity: "base" });
+          result = String(a.alliance || "").localeCompare(String(b.alliance || ""), currentLanguage, { sensitivity: "base" });
           break;
         case "score":
           result = (a.scores[0] || 0) - (b.scores[0] || 0);
@@ -2556,11 +3244,11 @@
     }
 
     function formatScore(value) {
-      return Number(value || 0).toLocaleString("fr-FR");
+      return Number(value || 0).toLocaleString(localeMap[currentLanguage]);
     }
 
     function formatAllianceScore(value) {
-      return `${(Number(value || 0) / 1000000).toLocaleString("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`;
+      return `${(Number(value || 0) / 1000000).toLocaleString(localeMap[currentLanguage], { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`;
     }
 
     function formatOptionalScore(value) {
@@ -2569,12 +3257,12 @@
 
     function formatArenaPower(value) {
       if (!Number.isFinite(value)) return `<span class="muted">-</span>`;
-      return `${value.toLocaleString("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`;
+      return `${value.toLocaleString(localeMap[currentLanguage], { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`;
     }
 
     function formatRatio(value) {
       if (!Number.isFinite(value)) return `<span class="muted">-</span>`;
-      return `${(value * 100).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`;
+      return `${(value * 100).toLocaleString(localeMap[currentLanguage], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`;
     }
 
     function renderTask(task) {
@@ -2591,7 +3279,7 @@
           </div>
         </div>
         <div class="task-meta">
-          <span class="tag moment">${momentLabel[task.moment] || "After reset"}</span>
+          <span class="tag moment">${momentLabel[task.moment] || momentLabel.reset || "After reset"}</span>
           <span class="tag ${task.priority}">${priorityLabel[task.priority]}</span>
           ${task.weekday ? `<span class="tag">${weekdayLabel[task.weekday]}</span>` : ""}
           ${task.time ? `<span class="tag">${task.time}</span>` : ""}
@@ -2733,7 +3421,7 @@
       const lines = current.tasks.map(task => {
         const status = task.done ? "OK" : "To do";
         const time = task.time ? ` ${task.time}` : "";
-        return `[${status}] ${momentLabel[task.moment] || "After reset"}${time} - ${task.name}`;
+        return `[${status}] ${momentLabel[task.moment] || momentLabel.reset || "After reset"}${time} - ${task.name}`;
       });
       await navigator.clipboard.writeText(`${current.name}\n${lines.join("\n")}`);
     });
@@ -2745,6 +3433,10 @@
     });
 
     fullPrepDay.addEventListener("change", render);
+    languageSelect.addEventListener("change", () => {
+      applyLanguage(languageSelect.value);
+      render();
+    });
     hqLevelSelect.addEventListener("change", renderSourceData);
     dailyTab.addEventListener("click", () => switchToolTab("daily"));
     allianceTab.addEventListener("click", () => switchToolTab("alliance"));
