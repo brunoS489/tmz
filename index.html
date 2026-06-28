@@ -552,6 +552,10 @@
       margin-top: 18px;
     }
 
+    .movements-view {
+      margin-top: 18px;
+    }
+
     .alliance-panel {
       display: grid;
       gap: 14px;
@@ -588,6 +592,39 @@
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 10px;
+    }
+
+    .movements-summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .movements-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.45;
+    }
+
+    .movements-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .movement-card {
+      display: grid;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(36, 43, 51, .45);
+    }
+
+    .movement-card h3 {
+      margin: 0;
+      font-size: 1rem;
     }
 
     .alliance-table-wrap {
@@ -887,6 +924,12 @@
       .alliance-table .member-name-head {
         min-width: 160px;
       }
+      .movements-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .movements-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 1280px) {
@@ -926,6 +969,9 @@
         position: static;
         box-shadow: none;
       }
+      .movements-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
     @media (max-width: 680px) {
@@ -933,7 +979,7 @@
       header { grid-template-columns: 1fr; }
       .today { text-align: left; }
       .account-list, .stats { grid-template-columns: 1fr; }
-      .tool-tabs, .alliance-summary { grid-template-columns: 1fr; width: 100%; }
+      .tool-tabs, .alliance-summary, .movements-summary { grid-template-columns: 1fr; width: 100%; }
       .task-form { grid-template-columns: 1fr; }
       .task-form button { grid-column: auto; }
       .quick-actions { grid-template-columns: 1fr; }
@@ -956,6 +1002,7 @@
     <div class="tool-tabs" role="tablist" aria-label="Sections de l'outil">
       <button class="tab-btn active" id="dailyTab" type="button">Aujourd'hui</button>
       <button class="tab-btn" id="allianceTab" type="button">Alliance</button>
+      <button class="tab-btn" id="movementsTab" type="button">Movements</button>
     </div>
 
     <div class="layout view" id="routineView">
@@ -1147,6 +1194,33 @@
         </div>
         <div class="alliance-table-wrap">
           <table class="alliance-table" id="allianceTable"></table>
+        </div>
+      </section>
+    </section>
+
+    <section class="movements-view view hidden" id="movementsView">
+      <section class="alliance-panel">
+        <h2>Movements - top 100 TMZ1</h2>
+        <div class="movements-summary">
+          <div class="stat"><b id="movementsTargetCount">100</b><span>joueurs cible TMZ1</span></div>
+          <div class="stat"><b id="movementsUpCount">0</b><span>TMZ2 → TMZ1</span></div>
+          <div class="stat"><b id="movementsDownCount">0</b><span>TMZ1 → TMZ2</span></div>
+          <div class="stat"><b id="movementsCutoff">-</b><span>seuil global contribution</span></div>
+        </div>
+        <p class="movements-note">Les 100 meilleurs joueurs par global contribution doivent rester dans TMZ1. Les joueurs listés ci-dessous sont ceux qui devraient basculer pour retrouver cette répartition.</p>
+        <div class="movements-grid">
+          <section class="movement-card">
+            <h3>TMZ2 → TMZ1</h3>
+            <div class="alliance-table-wrap">
+              <table class="alliance-table" id="movementsUpTable"></table>
+            </div>
+          </section>
+          <section class="movement-card">
+            <h3>TMZ1 → TMZ2</h3>
+            <div class="alliance-table-wrap">
+              <table class="alliance-table" id="movementsDownTable"></table>
+            </div>
+          </section>
         </div>
       </section>
     </section>
@@ -1691,6 +1765,7 @@
     let state = loadState();
     let activeAccount = state.activeAccount || state.accounts[0].id;
     let activeMoment = state.activeMoment || suggestedMoment(state.settings?.resetTime);
+    let activeToolTab = state.activeToolTab || "daily";
     let focusTaskId = null;
 
     const tabs = document.querySelector("#accountTabs");
@@ -1703,8 +1778,10 @@
     const hqLevelSelect = document.querySelector("#hqLevelSelect");
     const routineView = document.querySelector("#routineView");
     const allianceView = document.querySelector("#allianceView");
+    const movementsView = document.querySelector("#movementsView");
     const dailyTab = document.querySelector("#dailyTab");
     const allianceTab = document.querySelector("#allianceTab");
+    const movementsTab = document.querySelector("#movementsTab");
     const allianceSearch = document.querySelector("#allianceSearch");
     let allianceSortState = { key: "averageContribution", direction: "desc" };
 
@@ -1718,6 +1795,7 @@
     fillMomentSelect(document.querySelector("#taskMoment"));
     fillMomentSelect(document.querySelector("#editMoment"));
     fillHqSelect();
+    switchToolTab(activeToolTab);
 
     function makeTask(task) {
       return {
@@ -1906,6 +1984,7 @@
     function save() {
       state.activeAccount = activeAccount;
       state.activeMoment = activeMoment;
+      state.activeToolTab = activeToolTab;
       state.settings = {
         resetTime: resetTime.value || defaultResetTime,
         fullPrepDay: fullPrepDay.value || currentFullPrepDay(resetTime.value),
@@ -1934,16 +2013,22 @@
       renderFullPrep();
       renderSourceData();
       renderAlliance();
+      renderMovements();
       renderBoards();
       save();
     }
 
     function switchToolTab(target) {
+      activeToolTab = target;
+      const showDaily = target === "daily";
       const showAlliance = target === "alliance";
-      routineView.classList.toggle("hidden", showAlliance);
+      const showMovements = target === "movements";
+      routineView.classList.toggle("hidden", !showDaily);
       allianceView.classList.toggle("hidden", !showAlliance);
-      dailyTab.classList.toggle("active", !showAlliance);
+      movementsView.classList.toggle("hidden", !showMovements);
+      dailyTab.classList.toggle("active", showDaily);
       allianceTab.classList.toggle("active", showAlliance);
+      movementsTab.classList.toggle("active", showMovements);
     }
 
     function renderTabs() {
@@ -2225,7 +2310,7 @@
       document.querySelector("#tankSummary").textContent = `${tankDataSummary.totalWrenches.toLocaleString("fr-FR")} wrenches au total. Véhicules spéciaux: ${tankDataSummary.specialVehicles.join(", ")}. Dernier jalon: ${tankDataSummary.lastMilestone}.`;
     }
 
-    function renderAlliance() {
+    function buildAllianceSnapshot() {
       const total = allianceMembers.reduce((sum, member) => sum + (member.scores[0] || 0), 0);
       const arenaTotal = allianceMembers.reduce((sum, member) => sum + (Number.isFinite(member.arenaPower) ? member.arenaPower : (arenaPowerByName[member.name] || 0)), 0);
       const computedMembers = allianceMembers.map(member => {
@@ -2238,12 +2323,22 @@
           : scoreContribution;
         return { ...member, alliance: member.alliance || "TMZ1", arenaPower, scoreContribution, powerContribution, averageContribution };
       });
-      const contributionRanks = new Map(
-        [...computedMembers]
-          .sort((a, b) => compareAllianceMembers(a, b, { key: "averageContribution", direction: "desc" }))
-          .map((member, index) => [member.name, index + 1])
-      );
-      const top = [...computedMembers].sort((a, b) => b.averageContribution - a.averageContribution)[0];
+      const rankedMembers = [...computedMembers].sort((a, b) => compareAllianceMembers(a, b, { key: "averageContribution", direction: "desc" }));
+      const contributionRanks = new Map(rankedMembers.map((member, index) => [member.name, index + 1]));
+      const cutoff = rankedMembers[99] || null;
+      const promoteToTmz1 = rankedMembers.slice(0, 100)
+        .filter(member => member.alliance !== "TMZ1")
+        .map(member => ({ ...member, contributionRank: contributionRanks.get(member.name) || "-" }));
+      const demoteToTmz2 = rankedMembers.slice(100)
+        .filter(member => member.alliance === "TMZ1")
+        .map(member => ({ ...member, contributionRank: contributionRanks.get(member.name) || "-" }));
+      return { total, arenaTotal, computedMembers, rankedMembers, contributionRanks, cutoff, promoteToTmz1, demoteToTmz2 };
+    }
+
+    function renderAlliance() {
+      const snapshot = buildAllianceSnapshot();
+      const { total, computedMembers, contributionRanks, rankedMembers } = snapshot;
+      const top = rankedMembers[0] || null;
       const knownArena = allianceMembers.filter(member => Number.isFinite(member.arenaPower) || Number.isFinite(arenaPowerByName[member.name])).length;
       document.querySelector("#allianceMembersCount").textContent = allianceMembers.length;
       document.querySelector("#allianceTotalScore").textContent = formatAllianceScore(total);
@@ -2311,6 +2406,59 @@
           renderAlliance();
         });
       });
+    }
+
+    function renderMovements() {
+      const snapshot = buildAllianceSnapshot();
+      const { cutoff, contributionRanks, promoteToTmz1, demoteToTmz2 } = snapshot;
+      document.querySelector("#movementsTargetCount").textContent = "100";
+      document.querySelector("#movementsUpCount").textContent = promoteToTmz1.length;
+      document.querySelector("#movementsDownCount").textContent = demoteToTmz2.length;
+      document.querySelector("#movementsCutoff").textContent = cutoff
+        ? `#${contributionRanks.get(cutoff.name)} ${cutoff.name}`
+        : "-";
+
+      const renderRows = members => members.map(member => `
+        <tr>
+          <td class="member-rank">${member.contributionRank}</td>
+          <td class="member-name">${escapeHtml(member.name)}</td>
+          <td class="member-alliance">${escapeHtml(member.alliance)}</td>
+          <td class="member-alliance">${member.alliance === "TMZ1" ? "TMZ2" : "TMZ1"}</td>
+          <td>${formatAllianceScore(member.scores[0])}</td>
+          <td>${formatArenaPower(member.arenaPower)}</td>
+          <td>${formatRatio(member.averageContribution)}</td>
+        </tr>
+      `).join("");
+
+      document.querySelector("#movementsUpTable").innerHTML = `
+        <thead>
+          <tr>
+            <th class="member-rank">#</th>
+            <th class="member-name-head">Membre</th>
+            <th class="member-alliance-head">Actuelle</th>
+            <th class="member-alliance-head">Cible</th>
+            <th>Score duel</th>
+            <th>Power</th>
+            <th>Global contribution</th>
+          </tr>
+        </thead>
+        <tbody>${renderRows(promoteToTmz1) || `<tr><td colspan="7" class="empty">Aucun mouvement à monter.</td></tr>`}</tbody>
+      `;
+
+      document.querySelector("#movementsDownTable").innerHTML = `
+        <thead>
+          <tr>
+            <th class="member-rank">#</th>
+            <th class="member-name-head">Membre</th>
+            <th class="member-alliance-head">Actuelle</th>
+            <th class="member-alliance-head">Cible</th>
+            <th>Score duel</th>
+            <th>Power</th>
+            <th>Global contribution</th>
+          </tr>
+        </thead>
+        <tbody>${renderRows(demoteToTmz2) || `<tr><td colspan="7" class="empty">Aucun mouvement à descendre.</td></tr>`}</tbody>
+      `;
     }
 
     function normalizeSearchTerm(value) {
@@ -2584,6 +2732,7 @@
     hqLevelSelect.addEventListener("change", renderSourceData);
     dailyTab.addEventListener("click", () => switchToolTab("daily"));
     allianceTab.addEventListener("click", () => switchToolTab("alliance"));
+    movementsTab.addEventListener("click", () => switchToolTab("movements"));
     allianceSearch.addEventListener("input", () => renderAlliance());
     document.querySelector("#focusDoneAll").addEventListener("click", () => {
       const task = account().tasks.find(item => item.id === focusTaskId);
