@@ -2166,6 +2166,11 @@
           : scoreContribution;
         return { ...member, alliance: member.alliance || "TMZ1", arenaPower, scoreContribution, powerContribution, averageContribution };
       });
+      const contributionRanks = new Map(
+        [...computedMembers]
+          .sort((a, b) => compareAllianceMembers(a, b, { key: "averageContribution", direction: "desc" }))
+          .map((member, index) => [member.name, index + 1])
+      );
       const top = [...computedMembers].sort((a, b) => b.averageContribution - a.averageContribution)[0];
       const knownArena = allianceMembers.filter(member => Number.isFinite(member.arenaPower) || Number.isFinite(arenaPowerByName[member.name])).length;
       document.querySelector("#allianceMembersCount").textContent = allianceMembers.length;
@@ -2182,9 +2187,10 @@
       const rows = sortedMembers
         .map((member, index) => {
           const allianceRank = allianceRankByName[member.name] || "-";
+          const contributionRank = contributionRanks.get(member.name) || "-";
           return `
             <tr>
-              <td class="member-rank">${index + 1}</td>
+              <td class="member-rank">${contributionRank}</td>
               <td class="member-rank">${allianceRank}</td>
               <td class="member-name">${escapeHtml(member.name)}</td>
               <td class="member-alliance">${escapeHtml(member.alliance)}</td>
