@@ -1,0 +1,2527 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Last Z - Gestion des 3 comptes</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #121417;
+      --panel: #1d2228;
+      --panel-2: #242b33;
+      --line: #37414c;
+      --text: #f2f5f7;
+      --muted: #aeb8c2;
+      --accent: #5ac8a7;
+      --accent-2: #f3c85a;
+      --danger: #ef746f;
+      --blue: #6ba9ff;
+      --shadow: 0 18px 45px rgba(0, 0, 0, .28);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        linear-gradient(180deg, rgba(90, 200, 167, .08), transparent 300px),
+        var(--bg);
+      color: var(--text);
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid transparent;
+      border-radius: 8px;
+      color: var(--text);
+      background: var(--panel-2);
+      min-height: 40px;
+      cursor: pointer;
+    }
+
+    button:hover { border-color: rgba(242, 245, 247, .22); }
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .app {
+      width: min(1240px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 26px 0 34px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: clamp(1.7rem, 3vw, 2.45rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .today {
+      display: grid;
+      gap: 4px;
+      text-align: right;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .today strong {
+      color: var(--text);
+      font-size: 1.05rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 18px;
+      margin-top: 18px;
+      align-items: start;
+    }
+
+    .tool-tabs {
+      display: inline-grid;
+      grid-template-columns: repeat(2, minmax(150px, 1fr));
+      gap: 8px;
+      margin-top: 18px;
+      padding: 6px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(29, 34, 40, .74);
+    }
+
+    .tab-btn {
+      min-height: 38px;
+      padding: 0 14px;
+      color: var(--muted);
+      background: transparent;
+      border-color: transparent;
+      font-weight: 800;
+    }
+
+    .tab-btn.active {
+      color: #101417;
+      background: var(--accent-2);
+      border-color: var(--accent-2);
+    }
+
+    .view.hidden {
+      display: none;
+    }
+
+    aside {
+      position: sticky;
+      top: 14px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .account-list, .quick, .board, .summary {
+      background: rgba(29, 34, 40, .92);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .account-list {
+      padding: 8px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .account-tab {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+      padding: 12px;
+      text-align: left;
+      border-color: transparent;
+      background: transparent;
+    }
+
+    .account-tab.active {
+      background: rgba(90, 200, 167, .16);
+      border-color: rgba(90, 200, 167, .42);
+    }
+
+    .account-tab span {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 38px;
+      height: 26px;
+      padding: 0 8px;
+      border-radius: 999px;
+      color: #101417;
+      background: var(--accent);
+      font-weight: 800;
+      font-size: .8rem;
+    }
+
+    .quick {
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .quick h2, .summary h2, .focus-panel h2, .prep-panel h2, .source-panel h2 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .settings {
+      display: grid;
+      gap: 8px;
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .danger { color: #fff; background: rgba(239, 116, 111, .22); border-color: rgba(239, 116, 111, .35); }
+    .primary { color: #101417; background: var(--accent); font-weight: 800; }
+    .ghost { background: transparent; border-color: var(--line); }
+
+    main {
+      display: grid;
+      gap: 18px;
+    }
+
+    .summary {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: rgba(36, 43, 51, .7);
+      min-height: 78px;
+    }
+
+    .stat b {
+      display: block;
+      font-size: 1.55rem;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .progress {
+      height: 12px;
+      background: #11151a;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress div {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width .2s ease;
+    }
+
+    .moment-filter {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .moment-btn {
+      min-height: 36px;
+      padding: 0 10px;
+      color: var(--muted);
+      background: transparent;
+      border-color: var(--line);
+    }
+
+    .moment-btn.active {
+      color: #101417;
+      background: var(--accent-2);
+      border-color: var(--accent-2);
+      font-weight: 800;
+    }
+
+    .now-panel {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid rgba(243, 200, 90, .4);
+      border-radius: 8px;
+      background: rgba(243, 200, 90, .1);
+    }
+
+    .now-panel strong {
+      display: block;
+      color: var(--accent-2);
+    }
+
+    .now-panel span {
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .focus-panel {
+      display: grid;
+      gap: 14px;
+      padding: 16px;
+      border: 1px solid rgba(90, 200, 167, .48);
+      border-radius: 8px;
+      background: rgba(90, 200, 167, .1);
+      box-shadow: var(--shadow);
+    }
+
+    .focus-task {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .focus-task strong {
+      display: block;
+      font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+      overflow-wrap: anywhere;
+    }
+
+    .focus-task span {
+      display: block;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .done-all {
+      min-width: 150px;
+      padding: 0 14px;
+      color: #101417;
+      background: var(--accent);
+      font-weight: 850;
+    }
+
+    .prep-panel {
+      display: grid;
+      gap: 14px;
+      padding: 16px;
+      background: rgba(29, 34, 40, .92);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .prep-status {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .prep-card {
+      display: grid;
+      gap: 6px;
+      min-height: 86px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(36, 43, 51, .7);
+    }
+
+    .prep-card span {
+      color: var(--muted);
+      font-size: .84rem;
+    }
+
+    .prep-card b {
+      overflow-wrap: anywhere;
+      font-size: 1.05rem;
+    }
+
+    .prep-table-wrap {
+      display: none;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .prep-table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+    }
+
+    .prep-table th, .prep-table td {
+      padding: 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .prep-table th {
+      color: var(--muted);
+      background: rgba(36, 43, 51, .75);
+      font-weight: 700;
+    }
+
+    .prep-table tr:last-child td { border-bottom: 0; }
+    .prep-table .active-slot {
+      color: #101417;
+      background: rgba(243, 200, 90, .88);
+      font-weight: 850;
+    }
+
+    .today-matrix-panel {
+      display: grid;
+      gap: 14px;
+      padding: 16px;
+      background: rgba(29, 34, 40, .92);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .matrix-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .today-matrix {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+    }
+
+    .today-matrix th, .today-matrix td {
+      padding: 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .today-matrix th {
+      color: var(--muted);
+      background: rgba(36, 43, 51, .76);
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .today-matrix tr:last-child td { border-bottom: 0; }
+
+    .today-matrix .task-cell {
+      text-align: left;
+      min-width: 210px;
+    }
+
+    .task-cell strong {
+      display: block;
+      color: var(--text);
+      overflow-wrap: anywhere;
+    }
+
+    .task-cell span {
+      display: block;
+      color: var(--muted);
+      font-size: .78rem;
+      margin-top: 3px;
+    }
+
+    .status-btn {
+      width: 44px;
+      height: 36px;
+      min-height: 36px;
+      padding: 0;
+      font-weight: 900;
+      background: #11151a;
+      border-color: var(--line);
+    }
+
+    .status-btn.done {
+      color: #101417;
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .empty-cell {
+      color: transparent;
+      user-select: none;
+    }
+
+    .all-row-btn {
+      min-width: 86px;
+      padding: 0 10px;
+      color: #101417;
+      background: var(--accent-2);
+      border-color: var(--accent-2);
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .all-row-btn.done {
+      background: rgba(90, 200, 167, .22);
+      border-color: rgba(90, 200, 167, .38);
+      color: var(--muted);
+    }
+
+    .source-panel {
+      display: none;
+      gap: 14px;
+      padding: 16px;
+      background: rgba(29, 34, 40, .92);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .source-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .source-card {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(36, 43, 51, .7);
+      min-height: 110px;
+    }
+
+    .source-card strong {
+      overflow-wrap: anywhere;
+    }
+
+    .source-card span, .source-card a {
+      color: var(--muted);
+      font-size: .88rem;
+      line-height: 1.35;
+    }
+
+    .source-card a:hover { color: var(--text); }
+
+    .lookup {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .alliance-view {
+      margin-top: 18px;
+    }
+
+    .alliance-panel {
+      display: grid;
+      gap: 14px;
+      padding: 16px;
+      background: rgba(29, 34, 40, .92);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .alliance-panel h2 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .alliance-toolbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .alliance-toolbar .hint {
+      margin: 0;
+      color: var(--muted);
+      font-size: .86rem;
+    }
+
+    .alliance-search {
+      min-width: min(100%, 380px);
+    }
+
+    .alliance-summary {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .alliance-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .alliance-table {
+      width: 100%;
+      min-width: 900px;
+      border-collapse: collapse;
+    }
+
+    .alliance-table th,
+    .alliance-table td {
+      padding: 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .alliance-table th {
+      color: var(--muted);
+      background: rgba(36, 43, 51, .76);
+      font-weight: 800;
+    }
+
+    .alliance-table th.sortable {
+      padding: 0;
+    }
+
+    .alliance-table th.sortable button {
+      width: 100%;
+      min-height: 100%;
+      padding: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: inherit;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      font-weight: 800;
+    }
+
+    .sort-indicator {
+      color: var(--accent-2);
+      font-size: .8rem;
+      line-height: 1;
+    }
+
+    .alliance-table tr:last-child td { border-bottom: 0; }
+    .alliance-table .member-rank { text-align: center; width: 70px; }
+    .alliance-table .member-name,
+    .alliance-table .member-name-head {
+      text-align: left;
+      white-space: normal;
+      min-width: 190px;
+    }
+
+    .alliance-table .member-alliance,
+    .alliance-table .member-alliance-head {
+      text-align: center;
+      width: 110px;
+    }
+
+    .alliance-table .member-name {
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .task-form {
+      display: grid;
+      grid-template-columns: 1.25fr .78fr .72fr .62fr .58fr auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: .84rem;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--text);
+      background: #151a1f;
+      min-height: 40px;
+      padding: 9px 10px;
+    }
+
+    .columns {
+      display: none;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .board {
+      min-height: 400px;
+      overflow: hidden;
+    }
+
+    .board-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(36, 43, 51, .72);
+    }
+
+    .board-head h2 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .task-list {
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      min-height: 330px;
+    }
+
+    .task {
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(18, 20, 23, .72);
+    }
+
+    .task.done {
+      border-color: rgba(90, 200, 167, .38);
+      background: rgba(90, 200, 167, .08);
+    }
+
+    .task-title {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .check {
+      width: 28px;
+      height: 28px;
+      min-height: 28px;
+      padding: 0;
+      border-radius: 6px;
+      background: #11151a;
+      border-color: var(--line);
+      font-weight: 900;
+    }
+
+    .done .check {
+      color: #101417;
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .task-name {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      font-weight: 760;
+    }
+
+    .task-meta {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 2px 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    .tag.high { color: #fff0ef; border-color: rgba(239, 116, 111, .58); background: rgba(239, 116, 111, .14); }
+    .tag.mid { color: #fff8dc; border-color: rgba(243, 200, 90, .55); background: rgba(243, 200, 90, .13); }
+    .tag.low { color: #e5f2ff; border-color: rgba(107, 169, 255, .54); background: rgba(107, 169, 255, .12); }
+    .tag.moment { color: #eafff8; border-color: rgba(90, 200, 167, .52); background: rgba(90, 200, 167, .12); }
+
+    .task-actions {
+      display: flex;
+      gap: 6px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      min-height: 34px;
+      padding: 0;
+      font-weight: 800;
+    }
+
+    .triple-btn {
+      width: auto;
+      min-width: 82px;
+      padding: 0 8px;
+      color: #101417;
+      background: var(--accent);
+      border-color: var(--accent);
+      font-size: .78rem;
+    }
+
+    .empty {
+      margin: auto;
+      color: var(--muted);
+      text-align: center;
+      padding: 34px 12px;
+    }
+
+    dialog {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--text);
+      width: min(520px, calc(100% - 24px));
+      box-shadow: var(--shadow);
+    }
+
+    dialog::backdrop { background: rgba(0, 0, 0, .58); }
+
+    .dialog-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .dialog-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { position: static; grid-template-columns: 1fr; }
+      .account-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .columns { grid-template-columns: 1fr; }
+      .task-form { grid-template-columns: 1fr 1fr; }
+      .task-form button { grid-column: span 2; }
+      .prep-status, .source-grid { grid-template-columns: 1fr; }
+      .alliance-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .lookup { grid-template-columns: 1fr; }
+      .focus-task { grid-template-columns: 1fr; }
+      .done-all { width: 100%; }
+    }
+
+    @media (max-width: 680px) {
+      .app { width: min(100% - 18px, 1240px); padding-top: 16px; }
+      header { grid-template-columns: 1fr; }
+      .today { text-align: left; }
+      .account-list, .stats { grid-template-columns: 1fr; }
+      .tool-tabs, .alliance-summary { grid-template-columns: 1fr; width: 100%; }
+      .task-form { grid-template-columns: 1fr; }
+      .task-form button { grid-column: auto; }
+      .quick-actions { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <h1>Last Z - Gestion des 3 comptes</h1>
+        <p class="subtitle">Planifier les routines, suivre l’avancement et ne pas oublier les tâches importantes sur chaque compte.</p>
+      </div>
+      <div class="today">
+        <span>Aujourd’hui</span>
+        <strong id="todayLabel"></strong>
+      </div>
+    </header>
+
+    <div class="tool-tabs" role="tablist" aria-label="Sections de l'outil">
+      <button class="tab-btn active" id="dailyTab" type="button">Aujourd'hui</button>
+      <button class="tab-btn" id="allianceTab" type="button">Alliance</button>
+    </div>
+
+    <div class="layout view" id="routineView">
+      <aside>
+        <nav class="account-list" id="accountTabs" aria-label="Comptes"></nav>
+        <section class="quick">
+          <h2>Actions rapides</h2>
+          <div class="settings">
+            <label>
+              Heure reset serveur
+              <input id="resetTime" type="time" value="04:00">
+            </label>
+            <label>
+              Jour Full Prep
+              <select id="fullPrepDay">
+                <option value="1">Lundi - Day 1</option>
+                <option value="2">Mardi - Day 2</option>
+                <option value="3">Mercredi - Day 3</option>
+                <option value="4">Jeudi - Day 4</option>
+                <option value="5">Vendredi - Day 5</option>
+                <option value="6">Samedi - Day 6</option>
+                <option value="7">Dimanche - Day 7</option>
+              </select>
+            </label>
+          </div>
+          <div class="quick-actions">
+            <button class="ghost" id="resetDaily" title="Remettre les tâches quotidiennes à faire">↻ Quotidien</button>
+            <button class="ghost" id="copyPlan" title="Copier le plan du compte actif">⧉ Copier</button>
+            <button class="danger" id="clearDone" title="Supprimer les tâches terminées">× Finies</button>
+            <button class="primary" id="exportData" title="Exporter une sauvegarde">↓ Export</button>
+          </div>
+        </section>
+      </aside>
+
+      <main>
+        <section class="summary">
+          <h2 id="activeAccountName"></h2>
+          <div class="stats">
+            <div class="stat"><b id="statDone">0</b><span>tâches terminées</span></div>
+            <div class="stat"><b id="statTodo">0</b><span>reste à faire</span></div>
+            <div class="stat"><b id="statHigh">0</b><span>priorités fortes</span></div>
+            <div class="stat"><b id="statPercent">0%</b><span>progression</span></div>
+          </div>
+          <div class="progress" aria-label="Progression"><div id="progressBar"></div></div>
+          <div class="now-panel" id="nowPanel">
+            <strong id="nowTitle"></strong>
+            <span id="nowText"></span>
+          </div>
+          <div class="moment-filter" id="momentFilter" aria-label="Filtrer par moment"></div>
+          <form class="task-form" id="taskForm">
+            <label>
+              Tâche
+              <input id="taskName" maxlength="90" placeholder="Ex: récolter les ressources" required>
+            </label>
+            <label>
+              Catégorie
+              <select id="taskCategory">
+                <option value="daily">Quotidien</option>
+                <option value="weekly">Hebdo</option>
+                <option value="event">Événement</option>
+              </select>
+            </label>
+            <label>
+              Moment conseillé
+              <select id="taskMoment"></select>
+            </label>
+            <label>
+              Priorité
+              <select id="taskPriority">
+                <option value="high">Forte</option>
+                <option value="mid">Moyenne</option>
+                <option value="low">Basse</option>
+              </select>
+            </label>
+            <label>
+              Heure
+              <input id="taskTime" type="time">
+            </label>
+            <button class="primary" type="submit" title="Ajouter la tâche">+ Ajouter</button>
+          </form>
+        </section>
+
+        <section class="focus-panel">
+          <h2>À faire maintenant</h2>
+          <div class="focus-task">
+            <div>
+              <strong id="focusTaskName">-</strong>
+              <span id="focusTaskMeta"></span>
+            </div>
+            <button class="done-all" id="focusDoneAll" type="button">Fait sur 3 comptes</button>
+          </div>
+        </section>
+
+        <section class="today-matrix-panel">
+          <h2>Suivi aujourd'hui par compte</h2>
+          <div class="matrix-wrap">
+            <table class="today-matrix" id="todayMatrix"></table>
+          </div>
+        </section>
+
+        <section class="prep-panel">
+          <h2>Full Prep - créneau actuel</h2>
+          <div class="prep-status">
+            <div class="prep-card">
+              <span>Créneau actuel</span>
+              <b id="prepCurrent">-</b>
+            </div>
+            <div class="prep-card">
+              <span>Prochain créneau</span>
+              <b id="prepNext">-</b>
+            </div>
+            <div class="prep-card">
+              <span>Conseil</span>
+              <b id="prepAdvice">Prépare les actions du thème avant le créneau.</b>
+            </div>
+          </div>
+          <div class="prep-table-wrap">
+            <table class="prep-table" id="prepTable"></table>
+          </div>
+        </section>
+
+        <section class="source-panel">
+          <h2>Sources & données Last Z</h2>
+          <div class="source-grid">
+            <div class="source-card">
+              <strong>DWD Field Research</strong>
+              <span>Google Sheet CSV lu: 123 lignes. Coûts badges et conditions Field Research.</span>
+              <a href="https://docs.google.com/spreadsheets/d/17aDXEUMBsfr9SrlcnFrUjYCoTa2HeAfF/edit?gid=290957211#gid=290957211" target="_blank" rel="noreferrer">Ouvrir le Google Sheet</a>
+            </div>
+            <div class="source-card">
+              <strong>Last Z Helper</strong>
+              <span>Données publiques détectées: HQ, Research, Tank, Heroes, Equipment, Calculators, Lucky Discounter.</span>
+              <a href="https://lastz.stresswar.com/" target="_blank" rel="noreferrer">Ouvrir Last Z Helper</a>
+            </div>
+            <div class="source-card">
+              <strong>Lucky Discounter</strong>
+              <span>Garanties 90%: tirages 5, 9, 18, 32. Paliers: 30K à 750K points.</span>
+              <a href="https://lastz.stresswar.com/events/lucky-discounter" target="_blank" rel="noreferrer">Ouvrir le calculateur</a>
+            </div>
+          </div>
+          <div class="lookup">
+            <label>
+              Niveau HQ
+              <select id="hqLevelSelect"></select>
+            </label>
+            <div class="source-card">
+              <strong id="hqTitle">HQ</strong>
+              <span id="hqDetails"></span>
+            </div>
+          </div>
+          <div class="source-grid">
+            <div class="source-card">
+              <strong>Tank / Vehicle Mods</strong>
+              <span id="tankSummary"></span>
+            </div>
+            <div class="source-card">
+              <strong>Research à prioriser</strong>
+              <span>Le Google Sheet indique que Field Research demande New Home 100%, Elite Troops 100%, Military Strategies 40% et Siege to Seize 100%.</span>
+            </div>
+            <div class="source-card">
+              <strong>Prochaine intégration utile</strong>
+              <span>Transformer les coûts Research/Hero/Equipment en calculateurs intégrés, un par un, pour éviter une interface trop chargée.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="columns" id="boards"></section>
+      </main>
+    </div>
+
+    <section class="alliance-view view hidden" id="allianceView">
+      <section class="alliance-panel">
+        <h2>Alliance - contributions</h2>
+        <div class="alliance-toolbar">
+          <div>
+            <label>
+              Recherche dans le tableau
+              <input class="alliance-search" id="allianceSearch" type="search" placeholder="Nom, rank, score, arena, contribution...">
+            </label>
+            <p class="hint">La recherche parcourt toutes les colonnes affichées.</p>
+          </div>
+        </div>
+        <div class="alliance-summary">
+          <div class="stat"><b id="allianceMembersCount">0</b><span>membres recensés</span></div>
+          <div class="stat"><b id="allianceTotalScore">0</b><span>score total semaine actuelle</span></div>
+          <div class="stat"><b id="allianceTopContributor">-</b><span>meilleur contributeur</span></div>
+          <div class="stat"><b id="allianceKnownWeeks">1/1</b><span>score 3S renseigné</span></div>
+          <div class="stat"><b id="allianceArenaKnown">0</b><span>arena power renseigné</span></div>
+        </div>
+        <div class="alliance-table-wrap">
+          <table class="alliance-table" id="allianceTable"></table>
+        </div>
+      </section>
+    </section>
+  </div>
+
+  <dialog id="editDialog">
+    <form class="dialog-form" id="editForm" method="dialog">
+      <h2>Modifier la tâche</h2>
+      <input type="hidden" id="editId">
+      <label>
+        Tâche
+        <input id="editName" maxlength="90" required>
+      </label>
+      <label>
+        Catégorie
+        <select id="editCategory">
+          <option value="daily">Quotidien</option>
+          <option value="weekly">Hebdo</option>
+          <option value="event">Événement</option>
+        </select>
+      </label>
+      <label>
+        Moment conseillé
+        <select id="editMoment"></select>
+      </label>
+      <label>
+        Priorité
+        <select id="editPriority">
+          <option value="high">Forte</option>
+          <option value="mid">Moyenne</option>
+          <option value="low">Basse</option>
+        </select>
+      </label>
+      <label>
+        Heure
+        <input id="editTime" type="time">
+      </label>
+      <div class="dialog-actions">
+        <button class="ghost" value="cancel" type="button" id="cancelEdit">Annuler</button>
+        <button class="primary" value="default" type="submit">Enregistrer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    const storageKey = "last-z-three-account-tasks-v1";
+    const defaultResetTime = "04:00";
+    const categories = [
+      ["daily", "Quotidien"],
+      ["weekly", "Hebdo"],
+      ["event", "Événement"]
+    ];
+    const moments = [
+      ["all", "Tout"],
+      ["reset", "Après reset"],
+      ["midday", "Midi"],
+      ["evening", "Soir"],
+      ["beforeReset", "Avant reset"],
+      ["night", "Avant nuit"]
+    ];
+    const momentLabel = Object.fromEntries(moments);
+    const momentAdvice = {
+      all: "Vue complète de la routine du compte sélectionné.",
+      reset: "Prends les connexions, points boutique, tâches fraîches, bounties et départs de trucks.",
+      midday: "Relance ce qui est revenu: loot trucks, aides bounty, mines et aides alliance.",
+      evening: "Fais les tâches compétitives et alliance quand le compte est le plus fort et le groupe actif.",
+      beforeReset: "Récupère tout ce qui expire: loot, coffres, battle pass, rewards et objectifs restants.",
+      night: "Lance les mines, marches longues et préparations avant de laisser les comptes dormir."
+    };
+    const priorityLabel = { high: "Forte", mid: "Moyenne", low: "Basse" };
+    const accountLabel = {
+      main: "Principal",
+      farm1: "El dragon",
+      farm2: "mini wolfson"
+    };
+    const weekdayLabel = {
+      1: "Lundi",
+      2: "Mardi",
+      3: "Mercredi",
+      4: "Jeudi",
+      5: "Vendredi",
+      6: "Samedi",
+      7: "Dimanche"
+    };
+    const fullPrepTimes = ["04:00", "08:00", "12:00", "16:00", "20:00", "00:00"];
+    const fullPrepSchedule = {
+      1: ["Shelter Upgrade", "Age of Science", "Mod Vehicle Boost", "Hero Progression", "Army Expansion", "Mod Vehicle Boost"],
+      2: ["Age of Science", "Hero Progression", "Shelter Upgrade", "Army Expansion", "Mod Vehicle Boost", "Shelter Upgrade"],
+      3: ["Hero Progression", "Army Expansion", "Age of Science", "Mod Vehicle Boost", "Shelter Upgrade", "Age of Science"],
+      4: ["Army Expansion", "Mod Vehicle Boost", "Hero Progression", "Shelter Upgrade", "Age of Science", "Hero Progression"],
+      5: ["Mod Vehicle Boost", "Shelter Upgrade", "Army Expansion", "Age of Science", "Hero Progression", "Army Expansion"],
+      6: ["Age of Science", "Mod Vehicle Boost", "Hero Progression", "Shelter Upgrade", "Army Expansion", "Hero Progression"],
+      7: ["Mod Vehicle Boost", "Shelter Upgrade", "Army Expansion", "Age of Science", "Hero Progression", "Army Expansion"]
+    };
+    const prepAdvice = {
+      "Shelter Upgrade": "Garde les constructions/améliorations pour ce créneau.",
+      "Age of Science": "Lance ou termine la recherche pendant ce créneau.",
+      "Mod Vehicle Boost": "Réserve les actions liées aux véhicules/mods pour ce créneau.",
+      "Hero Progression": "Garde shards, XP héros et upgrades héros pour ce créneau.",
+      "Army Expansion": "Réserve entraînement, promotions et actions d'armée pour ce créneau."
+    };
+    const prepThemeLabel = {
+      "Shelter Upgrade": "Amélioration abri",
+      "Age of Science": "Âge de la science",
+      "Mod Vehicle Boost": "Modification véhicule",
+      "Hero Progression": "Progression héros",
+      "Army Expansion": "Expansion armée"
+    };
+    const hqRequirements = [
+      { level: 1, cap: 5, buildings: "Aucun", rss: "Wood 0.012M" },
+      { level: 2, cap: 10, buildings: "Aucun", rss: "Food 0.0103M" },
+      { level: 3, cap: 15, buildings: "Aucun", rss: "Food 0.0155M" },
+      { level: 4, cap: 20, buildings: "City Wall", rss: "Food 0.0233M" },
+      { level: 5, cap: 25, buildings: "Radar, Assaulter Camp", rss: "Food 0.0466M" },
+      { level: 10, cap: 50, buildings: "Laboratory, Shooter Camp", rss: "Wood 0.8599M, Food 0.8599M, Zent 0.168M" },
+      { level: 15, cap: 75, buildings: "Laboratory, Shooter Camp", rss: "Wood 7.8M, Food 7.8M, Zent 1.5M" },
+      { level: 20, cap: 100, buildings: "Laboratory, Shooter Camp", rss: "Wood 68.9M, Food 68.9M, Zent 13.5M" },
+      { level: 25, cap: 125, buildings: "Laboratory, Shooter Camp", rss: "Wood 333.2M, Food 333.2M, Zent 65.3M" },
+      { level: 30, cap: 150, buildings: "Laboratory, Shooter Camp", rss: "Wood 1.4G, Food 1.4G, Zent 277.1M" },
+      { level: 31, cap: 155, buildings: "Laboratory, Rider Camp", rss: "Wood 1.2G, Food 1.2G, Zent 241.4M, Steel 2.2M" },
+      { level: 32, cap: 160, buildings: "City Walls", rss: "Wood 1.4G, Food 1.4G, Zent 289.8M, Steel 3.1M" },
+      { level: 33, cap: 165, buildings: "Alliance Center", rss: "Wood 1.7G, Food 1.7G, Zent 347.6M, Steel 4.1M" },
+      { level: 34, cap: 170, buildings: "Assaulter Camp", rss: "Wood 2G, Food 2G, Zent 399.5M, Steel 5.3M" },
+      { level: 35, cap: 175, buildings: "Shooter Camp", rss: "Wood 2.3G, Food 2.3G, Zent 459.8M, Steel 6.4M" },
+      { level: 36, cap: 180, buildings: "Laboratory, Alliance Center", rss: "Non confirmé" },
+      { level: 37, cap: 185, buildings: "City Walls, Military Center", rss: "Non confirmé" },
+      { level: 38, cap: 190, buildings: "Rider Camp", rss: "Non confirmé" },
+      { level: 39, cap: 195, buildings: "Assaulter Camp", rss: "Non confirmé" },
+      { level: 40, cap: 200, buildings: "Shooter Camp", rss: "Non confirmé" }
+    ];
+    const tankDataSummary = {
+      totalWrenches: 70700,
+      specialVehicles: [
+        "Cheetah Armored Vehicle Lv45",
+        "Hercules Lv95",
+        "Destroyer Lv145",
+        "Destroyer-EX Lv195"
+      ],
+      lastMilestone: "Elite Trunk Modification Lv240"
+    };
+    const allianceScoreLabel = "Score 3S 28-06-2026";
+    const tmz1Members = [
+      { rank: 1, name: "HaMeeD¹", scores: [319655996, null, null] },
+      { rank: 2, name: "Wolfson490", scores: [304110509, null, null] },
+      { rank: 3, name: "MDogg", scores: [302173096, null, null] },
+      { rank: 4, name: "Makind", scores: [259416285, null, null] },
+      { rank: 5, name: "KP013", scores: [256081092, null, null] },
+      { rank: 6, name: "Tudno154", scores: [255238778, null, null] },
+      { rank: 7, name: "Duarte Silva", scores: [212142292, null, null] },
+      { rank: 8, name: "DeaconBlues", scores: [209519043, null, null] },
+      { rank: 9, name: "Dan 66", scores: [206951599, null, null] },
+      { rank: 10, name: "gamal elhelaly", scores: [185113702, null, null] },
+      { rank: 11, name: "gtxxx", scores: [179026291, null, null] },
+      { rank: 12, name: "vortexsurfer", scores: [177644302, null, null] },
+      { rank: 13, name: "Alexander1000", scores: [171973901, null, null] },
+      { rank: 14, name: "gma the king", scores: [169949099, null, null] },
+      { rank: 15, name: "Number 8", scores: [166253762, null, null] },
+      { rank: 16, name: "Gear2nd", scores: [163490049, null, null] },
+      { rank: 17, name: "Deaddalus", scores: [162293477, null, null] },
+      { rank: 18, name: "CthulhuSteve", scores: [160788232, null, null] },
+      { rank: 19, name: "MR 107", scores: [144321508, null, null] },
+      { rank: 20, name: "Bigtoker805", scores: [142647418, null, null] },
+      { rank: 21, name: "Savagenoname", scores: [142364926, null, null] },
+      { rank: 22, name: "Ali Karim", scores: [141403942, null, null] },
+      { rank: 23, name: "Papanase", scores: [140896644, null, null] },
+      { rank: 24, name: "SDMAN135", scores: [139455867, null, null] },
+      { rank: 25, name: "Saeed-A", scores: [139305964, null, null] },
+      { rank: 26, name: "Mack Lv 10", scores: [138335271, null, null] },
+      { rank: 27, name: "2ndry", scores: [133853218, null, null] },
+      { rank: 28, name: "Lewy1233", scores: [133442101, null, null] },
+      { rank: 29, name: "polochon", scores: [130035226, null, null] },
+      { rank: 30, name: "Khaaaaaaaan", scores: [129352282, null, null] },
+      { rank: 31, name: "chukyman", scores: [127404636, null, null] },
+      { rank: 32, name: "TheRoyalScam", scores: [125477039, null, null] },
+      { rank: 33, name: "R8R TONY", scores: [119419847, null, null] },
+      { rank: 34, name: "JFV2", scores: [115613570, null, null] },
+      { rank: 35, name: "Dlliii", scores: [114076984, null, null] },
+      { rank: 36, name: "psychoroïde", scores: [113550764, null, null] },
+      { rank: 37, name: "Justo31", scores: [112081466, null, null] },
+      { rank: 38, name: "Jason369", scores: [111981867, null, null] },
+      { rank: 39, name: "inqui", scores: [108271126, null, null] },
+      { rank: 40, name: "theDudeAbides", scores: [107883776, null, null] },
+      { rank: 41, name: "maislolzen", scores: [107004727, null, null] },
+      { rank: 42, name: "Wazza1", scores: [104376453, null, null] },
+      { rank: 43, name: "Kazzenger", scores: [104042547, null, null] },
+      { rank: 44, name: "Mohd87", scores: [103881510, null, null] },
+      { rank: 45, name: "MachoDuck", scores: [103635443, null, null] },
+      { rank: 46, name: "BlackEaglee", scores: [98954171, null, null] },
+      { rank: 47, name: "Pieman1993", scores: [97959444, null, null] },
+      { rank: 48, name: "Karakoca", scores: [94383093, null, null] },
+      { rank: 49, name: "TeAmoAgos", scores: [92382294, null, null] },
+      { rank: 50, name: "iTsRUbRUb", scores: [91298319, null, null] },
+      { rank: 51, name: "RoyRadax", scores: [90049438, null, null] },
+      { rank: 52, name: "Buqqaqestorm", scores: [89039967, null, null] },
+      { rank: 53, name: "Zonker", scores: [89026940, null, null] },
+      { rank: 54, name: "Emdes", scores: [88961419, null, null] },
+      { rank: 55, name: "summerholiday", scores: [87761231, null, null] },
+      { rank: 56, name: "UserOsito", scores: [87679288, null, null] },
+      { rank: 57, name: "El Dragón loco", scores: [85462702, null, null] },
+      { rank: 58, name: "merciless", scores: [85155752, null, null] },
+      { rank: 59, name: "Badlands", scores: [84378891, null, null] },
+      { rank: 60, name: "MrsFire", scores: [80932684, null, null] },
+      { rank: 61, name: "Bulgar13", scores: [80453605, null, null] },
+      { rank: 62, name: "Somadi25", scores: [78720856, null, null] },
+      { rank: 63, name: "Shuja Mir", scores: [78493870, null, null] },
+      { rank: 64, name: "mustafab", scores: [77901741, null, null] },
+      { rank: 65, name: "Sams MAM", scores: [76029048, null, null] },
+      { rank: 66, name: "NstyN8", scores: [72360263, null, null] },
+      { rank: 67, name: "PAWsitive Vibes", scores: [71440076, null, null] },
+      { rank: 68, name: "Lukasitaly", scores: [69599063, null, null] },
+      { rank: 69, name: "Nooona", scores: [67200941, null, null] },
+      { rank: 70, name: "Sufyann", scores: [66491701, null, null] },
+      { rank: 71, name: "Sbruscia", scores: [66237247, null, null] },
+      { rank: 72, name: "Black Wolf 2", scores: [61841664, null, null] },
+      { rank: 73, name: "Teamovenenozzo", scores: [61620873, null, null] },
+      { rank: 74, name: "oggie576", scores: [57807345, null, null] },
+      { rank: 75, name: "CoolArrow", scores: [56620113, null, null] },
+      { rank: 76, name: "ChrisCube", scores: [56160043, null, null] },
+      { rank: 77, name: "ASSMAN", scores: [55596964, null, null] },
+      { rank: 78, name: "LordsAngel", scores: [53808771, null, null] },
+      { rank: 79, name: "3MR", scores: [53724696, null, null] },
+      { rank: 80, name: "Riyad-", scores: [53109076, null, null] },
+      { rank: 81, name: "Dtbandeira", scores: [48701255, null, null] },
+      { rank: 82, name: "kingQuiver", scores: [48001769, null, null] },
+      { rank: 83, name: "Mika0110", scores: [47112083, null, null] },
+      { rank: 84, name: "SuppBo", scores: [47065165, null, null] },
+      { rank: 85, name: "Kentotzki", scores: [43619420, null, null] },
+      { rank: 86, name: "Gins110", scores: [42140424, null, null] },
+      { rank: 87, name: "Wellcampos", scores: [41496576, null, null] },
+      { rank: 88, name: "hopp66", scores: [39783271, null, null] },
+      { rank: 89, name: "Coca cola 777", scores: [39716347, null, null] },
+      { rank: 90, name: "sagura", scores: [37863172, null, null] },
+      { rank: 91, name: "War Hammer12", scores: [37527021, null, null] },
+      { rank: 92, name: "AZAP°", scores: [36580004, null, null] },
+      { rank: 93, name: "Abozoz", scores: [35985118, null, null] },
+      { rank: 94, name: "Fahad06", scores: [33075338, null, null] },
+      { rank: 95, name: "فارس سوق", scores: [31690567, null, null] },
+      { rank: 96, name: "HANIM", scores: [31593160, null, null] },
+      { rank: 97, name: "Slippin jimmy", scores: [30480369, null, null] },
+      { rank: 98, name: "Tanya180694", scores: [21214241, null, null] },
+      { rank: 99, name: "Raider 74", scores: [15200627, null, null] },
+      { rank: 100, name: "Death Jester436", scores: [14163883, null, null] }
+    ];
+    const tm2Members = [
+      { rank: 1, alliance: "TMZ2", name: "AKSingh", scores: [165018686, null, null] },
+      { rank: 2, alliance: "TMZ2", name: "dusto johir", scores: [125262108, null, null] },
+      { rank: 3, alliance: "TMZ2", name: "FroDo", scores: [108296323, null, null] },
+      { rank: 4, alliance: "TMZ2", name: "Md Mub", scores: [103902650, null, null] },
+      { rank: 5, alliance: "TMZ2", name: "SIGFRID", scores: [79863085, null, null] },
+      { rank: 6, alliance: "TMZ2", name: "Hatem711", scores: [78470469, null, null] },
+      { rank: 7, alliance: "TMZ2", name: "littleman", scores: [69867611, null, null] },
+      { rank: 8, alliance: "TMZ2", name: "Blackcrow 21", scores: [68785160, null, null] },
+      { rank: 9, alliance: "TMZ2", name: "General Zheng", scores: [65792192, null, null] },
+      { rank: 10, alliance: "TMZ2", name: "ODY", scores: [62366297, null, null] },
+      { rank: 11, alliance: "TMZ2", name: "YIDO", scores: [61972742, null, null] },
+      { rank: 12, alliance: "TMZ2", name: "Empress Tae", scores: [61296773, null, null] },
+      { rank: 13, alliance: "TMZ2", name: "Carl Biscuit", scores: [56705624, null, null] },
+      { rank: 14, alliance: "TMZ2", name: "kodies47", scores: [55633862, null, null] },
+      { rank: 15, alliance: "TMZ2", name: "brickman2964", scores: [50435626, null, null] },
+      { rank: 16, alliance: "TMZ2", name: "Suddenfire", scores: [49868658, null, null] },
+      { rank: 17, alliance: "TMZ2", name: "Eryk Kowalski", scores: [48421371, null, null] },
+      { rank: 18, alliance: "TMZ2", name: "SirAlexander", scores: [43726099, null, null] },
+      { rank: 19, alliance: "TMZ2", name: "2wo5ive", scores: [42647889, null, null] },
+      { rank: 20, alliance: "TMZ2", name: "Berger King", scores: [41670179, null, null] },
+      { rank: 21, alliance: "TMZ2", name: "FrostV3il", scores: [41229992, null, null] },
+      { rank: 22, alliance: "TMZ2", name: "Salvabor", scores: [37778638, null, null] },
+      { rank: 23, alliance: "TMZ2", name: "mako88", scores: [37438895, null, null] },
+      { rank: 24, alliance: "TMZ2", name: "Papanase-sis", scores: [37291783, null, null] },
+      { rank: 25, alliance: "TMZ2", name: "Cypriot19", scores: [36809450, null, null] },
+      { rank: 26, alliance: "TMZ2", name: "Deviant 1", scores: [36145122, null, null] },
+      { rank: 27, alliance: "TMZ2", name: "Newguy25", scores: [35757279, null, null] },
+      { rank: 28, alliance: "TMZ2", name: "BackinAction", scores: [34261971, null, null] },
+      { rank: 29, alliance: "TMZ2", name: "LeoNora", scores: [33221202, null, null] },
+      { rank: 30, alliance: "TMZ2", name: "Ali mohamed", scores: [32020161, null, null] },
+      { rank: 31, alliance: "TMZ2", name: "User3ll93y", scores: [31393134, null, null] },
+      { rank: 32, alliance: "TMZ2", name: "Mashel1090", scores: [31378490, null, null] },
+      { rank: 33, alliance: "TMZ2", name: "Bri An821", scores: [30066288, null, null] },
+      { rank: 34, alliance: "TMZ2", name: "KingPratik", scores: [28393867, null, null] },
+      { rank: 35, alliance: "TMZ2", name: "Tj12", scores: [28299782, null, null] },
+      { rank: 36, alliance: "TMZ2", name: "T7T||", scores: [28106631, null, null] },
+      { rank: 37, alliance: "TMZ2", name: "-CRAWL-", scores: [27274136, null, null] },
+      { rank: 38, alliance: "TMZ2", name: "Fayyaz Ansari", scores: [26216362, null, null] },
+      { rank: 39, alliance: "TMZ2", name: "AANSHUL", scores: [26135025, null, null] },
+      { rank: 40, alliance: "TMZ2", name: "-Heisenberg-", scores: [22802400, null, null] },
+      { rank: 41, alliance: "TMZ2", name: "Talbot17", scores: [22631297, null, null] },
+      { rank: 42, alliance: "TMZ2", name: "Hntrguy", scores: [21454529, null, null] },
+      { rank: 43, alliance: "TMZ2", name: "Sealord512", scores: [20715402, null, null] },
+      { rank: 44, alliance: "TMZ2", name: "Köpis", scores: [20548992, null, null] },
+      { rank: 45, alliance: "TMZ2", name: "Électrique", scores: [20475996, null, null] },
+      { rank: 46, alliance: "TMZ2", name: "TurboMax", scores: [20347181, null, null] },
+      { rank: 47, alliance: "TMZ2", name: "The QueeN", scores: [20111943, null, null] },
+      { rank: 48, alliance: "TMZ2", name: "Not Human", scores: [19298388, null, null] },
+      { rank: 49, alliance: "TMZ2", name: "bevieee", scores: [17734896, null, null] },
+      { rank: 50, alliance: "TMZ2", name: "Blackwolf127", scores: [17718286, null, null] },
+      { rank: 51, alliance: "TMZ2", name: "Negan611", scores: [17191367, null, null] },
+      { rank: 52, alliance: "TMZ2", name: "Luthien Wilder", scores: [16645349, null, null] },
+      { rank: 53, alliance: "TMZ2", name: "khan7867", scores: [15724581, null, null] },
+      { rank: 54, alliance: "TMZ2", name: "upai semarir", scores: [15310279, null, null] },
+      { rank: 55, alliance: "TMZ2", name: "aryol", scores: [15025728, null, null] },
+      { rank: 56, alliance: "TMZ2", name: "Imo 888", scores: [14596574, null, null] },
+      { rank: 57, alliance: "TMZ2", name: "JEY 07", scores: [14505547, null, null] },
+      { rank: 58, alliance: "TMZ2", name: "MOUL", scores: [14479567, null, null] },
+      { rank: 59, alliance: "TMZ2", name: "FKHUX", scores: [14354641, null, null] },
+      { rank: 60, alliance: "TMZ2", name: "LordShinobi", scores: [14208214, null, null] },
+      { rank: 61, alliance: "TMZ2", name: "BigAl6", scores: [13216934, null, null] },
+      { rank: 62, alliance: "TMZ2", name: "FriendlyBull", scores: [12713582, null, null] },
+      { rank: 63, alliance: "TMZ2", name: "uuvf", scores: [12265363, null, null] },
+      { rank: 64, alliance: "TMZ2", name: "Fonaxy", scores: [12111351, null, null] },
+      { rank: 65, alliance: "TMZ2", name: "Punkrock", scores: [11299308, null, null] },
+      { rank: 66, alliance: "TMZ2", name: "KOSCHEI", scores: [10811638, null, null] },
+      { rank: 67, alliance: "TMZ2", name: "Fredddddan", scores: [10670917, null, null] },
+      { rank: 68, alliance: "TMZ2", name: "Edge11", scores: [9819382, null, null] },
+      { rank: 69, alliance: "TMZ2", name: "David King 68", scores: [9735765, null, null] },
+      { rank: 70, alliance: "TMZ2", name: "NJ79lf", scores: [9668678, null, null] },
+      { rank: 71, alliance: "TMZ2", name: "User G 3 G", scores: [9594916, null, null] },
+      { rank: 72, alliance: "TMZ2", name: "Z50a1", scores: [8494696, null, null] },
+      { rank: 73, alliance: "TMZ2", name: "Fernando2702", scores: [8143023, null, null] },
+      { rank: 74, alliance: "TMZ2", name: "Nãno", scores: [7772285, null, null] },
+      { rank: 75, alliance: "TMZ2", name: "Hakan 36", scores: [7600559, null, null] },
+      { rank: 76, alliance: "TMZ2", name: "polochon bis", scores: [7412035, null, null] },
+      { rank: 77, alliance: "TMZ2", name: "Dougald", scores: [6648035, null, null] },
+      { rank: 78, alliance: "TMZ2", name: "AppleDymundz", scores: [2220308, null, null] },
+      { rank: 79, alliance: "TMZ2", name: "Angelwarrior", scores: [638928, null, null] },
+      { rank: 80, alliance: "TMZ2", name: "E3spiriSx", scores: [559823, null, null] }
+    ];
+    const allianceMembers = [...tmz1Members, ...tm2Members];
+    const arenaPowerByName = {
+      "Wolfson490": 115.7,
+      "HaMeeD¹": 56.5,
+      "MDogg": 141.5,
+      "Makind": 140.9,
+      "KP013": 65.2,
+      "Tudno154": 86.7,
+      "Duarte Silva": 74.2,
+      "DeaconBlues": 107.0,
+      "Dan 66": 114.3,
+      "gamal elhelaly": 51.8,
+      "gtxxx": 129.2,
+      "vortexsurfer": 95.6,
+      "Alexander1000": 56.8,
+      "gma the king": 59.2,
+      "Number 8": 49.9,
+      "Gear2nd": 60.8,
+      "Deaddalus": 69.0,
+      "CthulhuSteve": 93.8,
+      "MR 107": 79.5,
+      "Bigtoker805": 82.5,
+      "Savagenoname": 67.1,
+      "Ali Karim": 62.3,
+      "Papanase": 75.5,
+      "SDMAN135": 70.7,
+      "Saeed-A": 69.3,
+      "Mack Lv 10": 43.7,
+      "2ndry": 99.4,
+      "Lewy1233": 56.8,
+      "polochon": 54.9,
+      "Khaaaaaaaan": 60.3,
+      "chukyman": 65.0,
+      "TheRoyalScam": 28.9,
+      "R8R TONY": 59.1,
+      "JFV2": 52.8,
+      "Dlliii": 60.4,
+      "psychoroïde": 52.6,
+      "Justo31": 39.0,
+      "Jason369": 50.8,
+      "inqui": 55.0,
+      "theDudeAbides": 67.7,
+      "maislolzen": 37.1,
+      "Wazza1": 48.7,
+      "Kazzenger": 27.7,
+      "Mohd87": 43.8,
+      "MachoDuck": 18.9,
+      "BlackEaglee": 40.2,
+      "Pieman1993": 49.6,
+      "Karakoca": 62.3,
+      "TeAmoAgos": 27.6,
+      "iTsRUbRUb": 46.9,
+      "RoyRadax": 34.0,
+      "Buqqaqestorm": 39.4,
+      "Zonker": 52.0,
+      "Emdes": 37.1,
+      "summerholiday": 24.2,
+      "UserOsito": 39.3,
+      "El Dragón loco": 29.4,
+      "merciless": 79.4,
+      "Badlands": 29.5,
+      "MrsFire": 47.7,
+      "Bulgar13": 45.8,
+      "Somadi25": 37.7,
+      "Shuja Mir": 36.4,
+      "mustafab": 39.4,
+      "Sams MAM": 43.4,
+      "NstyN8": 30.0,
+      "PAWsitive Vibes": 56.6,
+      "Lukasitaly": 41.5,
+      "Nooona": 25.6,
+      "Sufyann": 32.1,
+      "Sbruscia": 67.3,
+      "Black Wolf 2": 17.1,
+      "Teamovenenozzo": 11.8,
+      "oggie576": 50.8,
+      "CoolArrow": 20.7,
+      "ChrisCube": 50.7,
+      "ASSMAN": 285.1,
+      "LordsAngel": 41.3,
+      "3MR": 45.4,
+      "Riyad-": 27.0,
+      "Dtbandeira": 31.8,
+      "kingQuiver": 59.3,
+      "Mika0110": 24.9,
+      "SuppBo": 26.4,
+      "Kentotzki": 48.5,
+      "Gins110": 37.8,
+      "Wellcampos": 57.8,
+      "hopp66": 23.6,
+      "Coca cola 777": 41.2,
+      "sagura": 34.1,
+      "War Hammer12": 76.6,
+      "AZAP°": 48.9,
+      "Abozoz": 23.9,
+      "Fahad06": 33.5,
+      "فارس سوق": 41.4,
+      "HANIM": 18.5,
+      "Slippin jimmy": 59.2,
+      "Tanya180694": 26.2,
+      "Raider 74": 58.6,
+      "Death Jester436": 28.7
+    };
+    const allianceRankByName = {
+      "MDogg": "R5",
+      "Wolfson490": "R4",
+      "merciless": "R4",
+      "Tudno154": "R4",
+      "Makind": "R4",
+      "Alexander1000": "R4",
+      "SDMAN135": "R4",
+      "DeaconBlues": "R4",
+      "vortexsurfer": "R4",
+      "R8R TONY": "R3",
+      "Number 8": "R3",
+      "Jason369": "R3",
+      "HaMeeD¹": "R3",
+      "Gear2nd": "R3",
+      "War Hammer12": "R3",
+      "El Dragón loco": "R3",
+      "Pieman1993": "R3",
+      "chukyman": "R3",
+      "Mack Lv 10": "R3",
+      "Lewy1233": "R3",
+      "gamal elhelaly": "R3",
+      "Savagenoname": "R3",
+      "CthulhuSteve": "R3",
+      "ASSMAN": "R3",
+      "JFV2": "R3",
+      "2ndry": "R3",
+      "Dlliii": "R3",
+      "Papanase": "R3",
+      "Duarte Silva": "R3",
+      "polochon": "R3",
+      "gtxxx": "R3",
+      "Wazza1": "R3",
+      "Buqqaqestorm": "R3",
+      "maislolzen": "R3",
+      "Justo31": "R3",
+      "Dan 66": "R3",
+      "Ali Karim": "R3",
+      "Sbruscia": "R3",
+      "Mohd87": "R3",
+      "Deaddalus": "R3",
+      "psychoroïde": "R3",
+      "ChrisCube": "R3",
+      "Slippin jimmy": "R3",
+      "oggie576": "R2",
+      "PAWsitive Vibes": "R2",
+      "Badlands": "R2",
+      "MrsFire": "R2",
+      "Kentotzki": "R1",
+      "CoolArrow": "R1",
+      "Riyad-": "R1",
+      "hopp66": "R1",
+      "Fahad06": "R1",
+      "MachoDuck": "R1",
+      "SuppBo": "R1",
+      "Death Jester436": "R1",
+      "sagura": "R1",
+      "Black Wolf 2": "R1"
+    };
+
+    const defaultTasks = [
+      { name: "Alliance vs chests", category: "event", priority: "high", moment: "reset", time: "" },
+      { name: "Trucks", category: "daily", priority: "high", moment: "reset", time: "" },
+      { name: "Trucks loot", category: "daily", priority: "high", moment: "midday", time: "" },
+      { name: "Furylord", category: "event", priority: "high", moment: "evening", time: "", excludeWeekdays: [7] },
+      { name: "Boomers", category: "event", priority: "high", moment: "evening", time: "" },
+      { name: "Bounty", category: "daily", priority: "high", moment: "reset", time: "" },
+      { name: "Bounty help", category: "daily", priority: "mid", moment: "midday", time: "" },
+      { name: "Bounty loot", category: "daily", priority: "high", moment: "beforeReset", time: "" },
+      { name: "Arena", category: "daily", priority: "mid", moment: "evening", time: "" },
+      { name: "Full prep", category: "event", priority: "high", moment: "night", time: "" },
+      { name: "Treasure hunt", category: "event", priority: "mid", moment: "evening", time: "" },
+      { name: "Lucky discounter", category: "event", priority: "mid", moment: "reset", time: "" },
+      { name: "Hero battle field", category: "event", priority: "high", moment: "evening", time: "" },
+      { name: "Cheer champion duel", category: "event", priority: "mid", moment: "evening", time: "" },
+      { name: "Treasure of the day", category: "daily", priority: "mid", moment: "reset", time: "" },
+      { name: "Warrior battle pass", category: "daily", priority: "mid", moment: "beforeReset", time: "" },
+      { name: "Mine", category: "daily", priority: "mid", moment: "night", time: "" },
+      { name: "Gift weekly", category: "weekly", priority: "high", moment: "reset", time: "" },
+      { name: "Store log in / points", category: "daily", priority: "high", moment: "reset", time: "" },
+      { name: "Alliance treasure hunt", category: "event", priority: "mid", moment: "evening", time: "" },
+      { name: "Zombie hunter", category: "event", priority: "mid", moment: "evening", time: "" },
+      { name: "Mines", category: "daily", priority: "mid", moment: "night", time: "" },
+      { name: "Achats time limited quotidien", category: "daily", priority: "high", moment: "reset", time: "" },
+      { name: "Ouvrir les chests", category: "daily", priority: "high", moment: "beforeReset", time: "" },
+      { name: "Daily tasks last chest", category: "daily", priority: "high", moment: "beforeReset", time: "" },
+      { name: "Full prep last chest", category: "daily", priority: "high", moment: "beforeReset", time: "" },
+      { name: "Battlefield Breakout", category: "event", priority: "high", moment: "evening", time: "", weekday: 7 },
+      { name: "Saga", category: "weekly", priority: "high", moment: "reset", time: "", weekday: 7 },
+      { name: "Essayer de gagner Alliance vs", category: "event", priority: "high", moment: "evening", time: "" }
+    ];
+    const todayPlan = [
+      { name: "Alliance vs chests", accounts: ["main", "farm1", "farm2"], category: "event", priority: "high", moment: "reset" },
+      { name: "Bounty", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "high", moment: "reset" },
+      { name: "Trucks", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "high", moment: "reset" },
+      { name: "Bounty help", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "mid", moment: "midday" },
+      { name: "Bounty loot", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "high", moment: "beforeReset" },
+      { name: "Trucks loot", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "high", moment: "midday" },
+      { name: "Hero battle field", accounts: ["main", "farm1", "farm2"], category: "event", priority: "high", moment: "evening" },
+      { name: "Achats time limited quotidien", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "high", moment: "reset" },
+      { name: "Ouvrir les chests", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "high", moment: "beforeReset" },
+      { name: "Daily tasks last chest", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "high", moment: "beforeReset" },
+      { name: "Full prep last chest", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "high", moment: "beforeReset" },
+      { name: "Furylord", accounts: ["main", "farm1", "farm2"], category: "event", priority: "high", moment: "evening", excludeWeekdays: [7] },
+      { name: "Battlefield Breakout", accounts: ["main", "farm1", "farm2"], category: "event", priority: "high", moment: "evening", weekday: 7 },
+      { name: "Saga", accounts: ["main", "farm1", "farm2"], category: "weekly", priority: "high", moment: "reset", weekday: 7 },
+      { name: "Arena", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "mid", moment: "evening" },
+      { name: "Boomers", accounts: ["main", "farm1", "farm2"], category: "event", priority: "high", moment: "evening" },
+      { name: "Essayer de gagner Alliance vs", accounts: ["main", "farm1", "farm2"], category: "event", priority: "high", moment: "evening" }
+    ];
+    const todayPlanVersion = "2026-06-28-v4";
+
+    let state = loadState();
+    let activeAccount = state.activeAccount || state.accounts[0].id;
+    let activeMoment = state.activeMoment || suggestedMoment(state.settings?.resetTime);
+    let focusTaskId = null;
+
+    const tabs = document.querySelector("#accountTabs");
+    const boards = document.querySelector("#boards");
+    const taskForm = document.querySelector("#taskForm");
+    const editDialog = document.querySelector("#editDialog");
+    const editForm = document.querySelector("#editForm");
+    const resetTime = document.querySelector("#resetTime");
+    const fullPrepDay = document.querySelector("#fullPrepDay");
+    const hqLevelSelect = document.querySelector("#hqLevelSelect");
+    const routineView = document.querySelector("#routineView");
+    const allianceView = document.querySelector("#allianceView");
+    const dailyTab = document.querySelector("#dailyTab");
+    const allianceTab = document.querySelector("#allianceTab");
+    const allianceSearch = document.querySelector("#allianceSearch");
+    let allianceSortState = { key: "averageContribution", direction: "desc" };
+
+    document.querySelector("#todayLabel").textContent = new Intl.DateTimeFormat("fr-FR", {
+      weekday: "long",
+      day: "2-digit",
+      month: "long"
+    }).format(new Date());
+    resetTime.value = state.settings?.resetTime || defaultResetTime;
+    fullPrepDay.value = currentFullPrepDay(resetTime.value);
+    fillMomentSelect(document.querySelector("#taskMoment"));
+    fillMomentSelect(document.querySelector("#editMoment"));
+    fillHqSelect();
+
+    function makeTask(task) {
+      return {
+        id: crypto.randomUUID(),
+        name: task.name,
+        category: task.category,
+        priority: task.priority,
+        moment: task.moment || "reset",
+        time: task.time || "",
+        weekday: task.weekday || null,
+        excludeWeekdays: Array.isArray(task.excludeWeekdays) ? task.excludeWeekdays.slice() : [],
+        done: false
+      };
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed.accounts) && parsed.accounts.length) {
+            migrateAccountNames(parsed.accounts);
+            migrateTaskScheduling(parsed.accounts);
+            if (!parsed.settings) parsed.settings = { resetTime: defaultResetTime, fullPrepDay: currentFullPrepDay(defaultResetTime) };
+            if (!parsed.settings.resetTime || parsed.settings.resetTime === "00:00") parsed.settings.resetTime = defaultResetTime;
+            const todayKey = currentGameDayKey(parsed.settings.resetTime);
+            const shouldResetToday = parsed.settings.todayPlanKey !== todayKey;
+            const shouldRefreshPlan = parsed.settings.todayPlanVersion !== todayPlanVersion;
+            parsed.settings.fullPrepDay = currentFullPrepDay(parsed.settings.resetTime);
+            parsed.accounts.forEach(addMissingDefaultTasks);
+            applyTodayPlan(parsed, shouldResetToday, shouldRefreshPlan);
+            parsed.settings.todayPlanKey = todayKey;
+            parsed.settings.todayPlanVersion = todayPlanVersion;
+            return parsed;
+          }
+        } catch (error) {
+          localStorage.removeItem(storageKey);
+        }
+      }
+      const freshState = {
+        activeAccount: "main",
+        activeMoment: "all",
+        settings: {
+          resetTime: defaultResetTime,
+          fullPrepDay: currentFullPrepDay(defaultResetTime),
+          todayPlanKey: currentGameDayKey(defaultResetTime),
+          todayPlanVersion
+        },
+        accounts: [
+          { id: "main", name: "Compte principal", tasks: defaultTasks.map(makeTask) },
+          { id: "farm1", name: "El dragon", tasks: defaultTasks.map(makeTask) },
+          { id: "farm2", name: "mini wolfson", tasks: defaultTasks.map(makeTask) }
+        ]
+      };
+      applyTodayPlan(freshState, true, true);
+      return freshState;
+    }
+
+    function migrateAccountNames(accounts) {
+      const nameById = {
+        farm1: "El dragon",
+        farm2: "mini wolfson"
+      };
+      accounts.forEach(account => {
+        if (nameById[account.id]) account.name = nameById[account.id];
+      });
+    }
+
+    function migrateTaskScheduling(accounts) {
+      accounts.forEach(account => {
+        if (!Array.isArray(account.tasks)) return;
+        account.tasks.forEach(task => {
+          if (normalizeTaskName(task.name) === normalizeTaskName("Furylord")) {
+            task.excludeWeekdays = [7];
+          }
+          if (normalizeTaskName(task.name) === normalizeTaskName("Battlefield Breakout")) {
+            task.weekday = 7;
+          }
+          if (normalizeTaskName(task.name) === normalizeTaskName("Saga")) {
+            task.weekday = 7;
+          }
+        });
+      });
+    }
+
+    function addMissingDefaultTasks(targetAccount) {
+      if (!Array.isArray(targetAccount.tasks)) targetAccount.tasks = [];
+      const existingNames = new Set(targetAccount.tasks.map(task => normalizeTaskName(task.name)));
+      targetAccount.tasks.forEach(task => {
+        const template = defaultTasks.find(item => normalizeTaskName(item.name) === normalizeTaskName(task.name));
+        if (!task.moment) task.moment = template?.moment || "reset";
+        if (!task.category) task.category = template?.category || "daily";
+        if (!task.priority) task.priority = template?.priority || "mid";
+        if (!task.weekday && template?.weekday) task.weekday = template.weekday;
+        if (Array.isArray(template?.excludeWeekdays) && (!Array.isArray(task.excludeWeekdays) || task.excludeWeekdays.length === 0)) {
+          task.excludeWeekdays = template.excludeWeekdays.slice();
+        }
+      });
+      defaultTasks.forEach(task => {
+        const key = normalizeTaskName(task.name);
+        if (!existingNames.has(key)) {
+          targetAccount.tasks.push(makeTask(task));
+          existingNames.add(key);
+        }
+      });
+    }
+
+    function applyTodayPlan(targetState, resetPlan = false, refreshPlan = false) {
+      const scheduledPlanItems = scheduledTodayPlanItems();
+      const planKeys = new Set(scheduledPlanItems.map(item => normalizeTaskName(item.name)));
+      targetState.activeMoment = "all";
+      targetState.accounts.forEach(targetAccount => {
+        const allowedNames = new Set(scheduledPlanItems
+          .filter(item => item.accounts.includes(targetAccount.id))
+          .map(item => normalizeTaskName(item.name)));
+        targetAccount.tasks.forEach(task => {
+          if (planKeys.has(normalizeTaskName(task.name)) && !allowedNames.has(normalizeTaskName(task.name))) {
+            task.done = true;
+          }
+        });
+        scheduledPlanItems
+          .filter(item => item.accounts.includes(targetAccount.id))
+          .forEach(item => {
+            let task = targetAccount.tasks.find(candidate => normalizeTaskName(candidate.name) === normalizeTaskName(item.name));
+            if (!task) {
+              task = makeTask(item);
+              targetAccount.tasks.push(task);
+            }
+            task.category = item.category;
+            task.priority = item.priority;
+            task.moment = item.moment;
+            if (resetPlan || (refreshPlan && task.done && wasPlanTaskInactive(targetAccount.id, item.name, targetState.settings?.todayPlanVersion))) {
+              task.done = false;
+            }
+          });
+        if (resetPlan) {
+          targetAccount.tasks.forEach(task => {
+            if (!allowedNames.has(normalizeTaskName(task.name))) task.done = true;
+          });
+        }
+      });
+    }
+
+    function wasPlanTaskInactive(accountId, taskName, previousVersion) {
+      if (previousVersion === todayPlanVersion) return false;
+      const key = normalizeTaskName(taskName);
+      const previousV2 = {
+        [normalizeTaskName("Alliance vs chests")]: ["main", "farm1"],
+        [normalizeTaskName("Bounty")]: ["main", "farm1", "farm2"],
+        [normalizeTaskName("Trucks")]: ["main", "farm1", "farm2"],
+        [normalizeTaskName("Bounty help")]: ["main", "farm1", "farm2"],
+        [normalizeTaskName("Bounty loot")]: ["main", "farm1", "farm2"],
+        [normalizeTaskName("Trucks loot")]: ["main", "farm1", "farm2"],
+        [normalizeTaskName("Hero battle field")]: ["main", "farm1", "farm2"],
+        [normalizeTaskName("Achats time limited quotidien")]: ["main", "farm1", "farm2"],
+        [normalizeTaskName("Ouvrir les chests")]: ["farm2"],
+        [normalizeTaskName("Arena")]: ["main"],
+        [normalizeTaskName("Boomers")]: ["farm2"],
+        [normalizeTaskName("Essayer de gagner Alliance vs")]: ["main"]
+      };
+      const previouslyActive = previousVersion === "2026-06-28-v2" ? previousV2[key] || [] : [];
+      return !previouslyActive.includes(accountId);
+    }
+
+    function normalizeTaskName(name) {
+      return String(name || "").trim().toLowerCase();
+    }
+
+    function currentWeekdayNumber(date = new Date()) {
+      const jsDay = date.getDay();
+      return jsDay === 0 ? 7 : jsDay;
+    }
+
+    function isTaskScheduledToday(task) {
+      const today = currentWeekdayNumber();
+      if (Array.isArray(task.excludeWeekdays) && task.excludeWeekdays.includes(today)) return false;
+      return !task.weekday || task.weekday === today;
+    }
+
+    function isTaskVisibleForMoment(task, momentKey) {
+      if (!isTaskScheduledToday(task)) return false;
+      if (momentKey === "all") return true;
+      return task.moment === momentKey || !!task.weekday;
+    }
+
+    function save() {
+      state.activeAccount = activeAccount;
+      state.activeMoment = activeMoment;
+      state.settings = {
+        resetTime: resetTime.value || defaultResetTime,
+        fullPrepDay: fullPrepDay.value || currentFullPrepDay(resetTime.value),
+        todayPlanKey: state.settings?.todayPlanKey || currentGameDayKey(resetTime.value),
+        todayPlanVersion
+      };
+      localStorage.setItem(storageKey, JSON.stringify(state));
+    }
+
+    function account() {
+      return state.accounts.find(item => item.id === activeAccount) || state.accounts[0];
+    }
+
+    function visibleTasks() {
+      const tasks = account().tasks.filter(isTaskScheduledToday);
+      if (activeMoment === "all") return tasks;
+      return tasks.filter(task => isTaskVisibleForMoment(task, activeMoment));
+    }
+
+    function render() {
+      renderTabs();
+      renderMomentFilter();
+      renderSummary();
+      renderFocusTask();
+      renderTodayMatrix();
+      renderFullPrep();
+      renderSourceData();
+      renderAlliance();
+      renderBoards();
+      save();
+    }
+
+    function switchToolTab(target) {
+      const showAlliance = target === "alliance";
+      routineView.classList.toggle("hidden", showAlliance);
+      allianceView.classList.toggle("hidden", !showAlliance);
+      dailyTab.classList.toggle("active", !showAlliance);
+      allianceTab.classList.toggle("active", showAlliance);
+    }
+
+    function renderTabs() {
+      tabs.innerHTML = "";
+      state.accounts.forEach(item => {
+        const scheduledTasks = item.tasks.filter(isTaskScheduledToday);
+        const total = scheduledTasks.length;
+        const done = scheduledTasks.filter(task => task.done).length;
+        const button = document.createElement("button");
+        button.className = `account-tab${item.id === activeAccount ? " active" : ""}`;
+        button.type = "button";
+        button.innerHTML = `<span>${escapeHtml(item.name)}</span><b class="pill">${done}/${total}</b>`;
+        button.addEventListener("click", () => {
+          activeAccount = item.id;
+          render();
+        });
+        tabs.append(button);
+      });
+    }
+
+    function renderMomentFilter() {
+      const filter = document.querySelector("#momentFilter");
+      filter.innerHTML = "";
+      moments.forEach(([key, label]) => {
+        const count = key === "all"
+          ? visibleTasks().filter(task => !task.done).length
+          : visibleTasks().filter(task => !task.done && isTaskVisibleForMoment(task, key)).length;
+        const button = document.createElement("button");
+        button.className = `moment-btn${key === activeMoment ? " active" : ""}`;
+        button.type = "button";
+        button.textContent = `${label} (${count})`;
+        button.addEventListener("click", () => {
+          activeMoment = key;
+          render();
+        });
+        filter.append(button);
+      });
+      document.querySelector("#nowTitle").textContent = activeMoment === "all"
+        ? "Routine complète"
+        : `À faire: ${momentLabel[activeMoment]}`;
+      document.querySelector("#nowText").textContent = `${momentAdvice[activeMoment]} Reset serveur: ${resetTime.value || "00:00"}.`;
+    }
+
+    function renderSummary() {
+      const current = visibleTasks();
+      const total = current.length;
+      const done = current.filter(task => task.done).length;
+      const todo = total - done;
+      const high = current.filter(task => !task.done && task.priority === "high").length;
+      const percent = total ? Math.round((done / total) * 100) : 0;
+      document.querySelector("#activeAccountName").textContent = `${account().name} - reste aujourd'hui`;
+      document.querySelector("#statDone").textContent = done;
+      document.querySelector("#statTodo").textContent = todo;
+      document.querySelector("#statHigh").textContent = high;
+      document.querySelector("#statPercent").textContent = `${percent}%`;
+      document.querySelector("#progressBar").style.width = `${percent}%`;
+    }
+
+    function renderBoards() {
+      const current = visibleTasks();
+      boards.innerHTML = "";
+      categories.forEach(([key, label]) => {
+        const tasks = current
+          .filter(task => task.category === key)
+          .sort((a, b) => momentRank(a.moment) - momentRank(b.moment) || priorityRank(a.priority) - priorityRank(b.priority) || a.time.localeCompare(b.time));
+        const remainingTasks = tasks.filter(task => !task.done);
+        const board = document.createElement("section");
+        board.className = "board";
+        board.innerHTML = `
+          <div class="board-head">
+            <h2>${label}</h2>
+            <span class="pill">${remainingTasks.length}</span>
+          </div>
+          <div class="task-list"></div>
+        `;
+        const list = board.querySelector(".task-list");
+        if (!remainingTasks.length) {
+          list.innerHTML = `<div class="empty">Aucune tâche</div>`;
+        } else {
+          remainingTasks.forEach(task => list.append(renderTask(task)));
+        }
+        boards.append(board);
+      });
+    }
+
+    function sortedActionTasks(tasks) {
+      return [...tasks].sort((a, b) => {
+        if (a.done !== b.done) return a.done ? 1 : -1;
+        return momentRank(a.moment) - momentRank(b.moment) || priorityRank(a.priority) - priorityRank(b.priority) || a.time.localeCompare(b.time);
+      });
+    }
+
+    function renderFocusTask() {
+      const candidate = sortedActionTasks(visibleTasks()).find(task => !task.done);
+      focusTaskId = candidate?.id || null;
+      const button = document.querySelector("#focusDoneAll");
+      if (!candidate) {
+        document.querySelector("#focusTaskName").textContent = "Rien à faire sur ce filtre";
+        document.querySelector("#focusTaskMeta").textContent = "Change de moment ou de compte pour voir la prochaine action.";
+        button.disabled = true;
+        return;
+      }
+      button.disabled = false;
+      const time = candidate.time ? ` · ${candidate.time}` : "";
+      const planItem = scheduledTodayPlanItems().find(item => normalizeTaskName(item.name) === normalizeTaskName(candidate.name));
+      const scope = planItem?.accounts.length === 3 ? "sur les 3 comptes" : account().name;
+      document.querySelector("#focusTaskName").textContent = candidate.name;
+      document.querySelector("#focusTaskMeta").textContent = `${scope} · ${momentLabel[candidate.moment]} · priorité ${priorityLabel[candidate.priority]}${time}`;
+      button.textContent = planItem?.accounts.length === 3 ? "Fait sur 3 comptes" : "Fait";
+    }
+
+    function renderTodayMatrix() {
+      const table = document.querySelector("#todayMatrix");
+      const currentPlan = scheduledTodayPlanItems();
+      const header = `
+        <thead>
+          <tr>
+            <th class="task-cell">Tâche</th>
+            <th>${accountLabel.main}</th>
+            <th>${accountLabel.farm1}</th>
+            <th>${accountLabel.farm2}</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+      `;
+      const rows = currentPlan.map(item => {
+        const cells = ["main", "farm1", "farm2"].map(accountId => renderMatrixCell(item, accountId)).join("");
+        const allDone = item.accounts.every(accountId => isTodayPlanDone(item, accountId));
+        return `
+          <tr>
+            <td class="task-cell">
+              <strong>${escapeHtml(item.name)}</strong>
+              <span>${momentLabel[item.moment]} · ${priorityLabel[item.priority]}</span>
+            </td>
+            ${cells}
+            <td><button class="all-row-btn${allDone ? " done" : ""}" type="button" data-task="${escapeHtml(item.name)}">${allDone ? "Fait" : "Tout"}</button></td>
+          </tr>
+        `;
+      }).join("");
+      table.innerHTML = `${header}<tbody>${rows}</tbody>`;
+      table.querySelectorAll(".status-btn[data-account]").forEach(button => {
+        button.addEventListener("click", () => {
+          toggleTodayPlanTask(button.dataset.task, button.dataset.account);
+          render();
+        });
+      });
+      table.querySelectorAll(".all-row-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          markTodayPlanTaskDone(button.dataset.task);
+          render();
+        });
+      });
+    }
+
+    function scheduledTodayPlanItems() {
+      const today = currentWeekdayNumber();
+      return todayPlan.filter(item => {
+        if (Array.isArray(item.excludeWeekdays) && item.excludeWeekdays.includes(today)) return false;
+        return !item.weekday || item.weekday === today;
+      });
+    }
+
+    function renderMatrixCell(item, accountId) {
+      if (!item.accounts.includes(accountId)) {
+        return `<td class="empty-cell">-</td>`;
+      }
+      const done = isTodayPlanDone(item, accountId);
+      return `<td><button class="status-btn${done ? " done" : ""}" type="button" data-task="${escapeHtml(item.name)}" data-account="${accountId}" title="${accountLabel[accountId]}">${done ? "✓" : ""}</button></td>`;
+    }
+
+    function isTodayPlanDone(item, accountId) {
+      const task = getAccountTask(accountId, item.name);
+      return !!task?.done;
+    }
+
+    function getAccountTask(accountId, taskName) {
+      const targetAccount = state.accounts.find(item => item.id === accountId);
+      return targetAccount?.tasks.find(task => normalizeTaskName(task.name) === normalizeTaskName(taskName));
+    }
+
+    function toggleTodayPlanTask(taskName, accountId) {
+      const task = getAccountTask(accountId, taskName);
+      if (task) task.done = !task.done;
+    }
+
+    function markTodayPlanTaskDone(taskName) {
+      const item = todayPlan.find(candidate => normalizeTaskName(candidate.name) === normalizeTaskName(taskName));
+      if (!item) return;
+      item.accounts.forEach(accountId => {
+        const task = getAccountTask(accountId, item.name);
+        if (task) task.done = true;
+      });
+    }
+
+    function renderFullPrep() {
+      const selectedDay = Number(currentFullPrepDay(resetTime.value));
+      fullPrepDay.value = String(selectedDay);
+      const activeSlot = currentPrepSlot(selectedDay);
+      const nextSlot = nextPrepSlot(selectedDay, activeSlot.index);
+      const currentTheme = fullPrepSchedule[activeSlot.day][activeSlot.index];
+      const nextTheme = fullPrepSchedule[nextSlot.day][nextSlot.index];
+      document.querySelector("#prepCurrent").textContent = `${weekdayLabel[activeSlot.day]} ${fullPrepTimes[activeSlot.index]} - ${displayPrepTheme(currentTheme)}`;
+      document.querySelector("#prepNext").textContent = `${weekdayLabel[nextSlot.day]} ${fullPrepTimes[nextSlot.index]} - ${displayPrepTheme(nextTheme)}`;
+      document.querySelector("#prepAdvice").textContent = prepAdvice[currentTheme] || "Prépare les actions du thème avant le créneau.";
+      renderFullPrepTable(activeSlot);
+    }
+
+    function displayPrepTheme(theme) {
+      return prepThemeLabel[theme] || theme;
+    }
+
+    function renderFullPrepTable(activeSlot) {
+      const table = document.querySelector("#prepTable");
+      const head = `<thead><tr><th>Jour</th>${fullPrepTimes.map(time => `<th>${time}</th>`).join("")}</tr></thead>`;
+      const rows = Object.entries(fullPrepSchedule).map(([day, themes]) => {
+        const cells = themes.map((theme, index) => {
+          const active = Number(day) === activeSlot.day && index === activeSlot.index;
+          return `<td class="${active ? "active-slot" : ""}">${displayPrepTheme(theme)}</td>`;
+        }).join("");
+        return `<tr><th>${weekdayLabel[day]}<br>Day ${day}</th>${cells}</tr>`;
+      }).join("");
+      table.innerHTML = `${head}<tbody>${rows}</tbody>`;
+    }
+
+    function currentPrepSlot(selectedDay) {
+      const now = new Date();
+      const localDay = currentFullPrepDay(resetTime.value);
+      const day = selectedDay || localDay;
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      let index = fullPrepTimes.length - 1;
+      if (currentMinutes >= timeToMinutes("04:00")) index = 0;
+      if (currentMinutes >= timeToMinutes("08:00")) index = 1;
+      if (currentMinutes >= timeToMinutes("12:00")) index = 2;
+      if (currentMinutes >= timeToMinutes("16:00")) index = 3;
+      if (currentMinutes >= timeToMinutes("20:00")) index = 4;
+      return { day, index };
+    }
+
+    function nextPrepSlot(day, index) {
+      if (index < fullPrepTimes.length - 1) return { day, index: index + 1 };
+      return { day: day === 7 ? 1 : day + 1, index: 0 };
+    }
+
+    function currentFullPrepDay(resetValue = defaultResetTime) {
+      const now = new Date();
+      const resetMinutes = timeToMinutes(resetValue || defaultResetTime);
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      const adjusted = new Date(now);
+      if (currentMinutes < resetMinutes) adjusted.setDate(adjusted.getDate() - 1);
+      const jsDay = adjusted.getDay();
+      return String(jsDay === 0 ? 7 : jsDay);
+    }
+
+    function currentGameDayKey(resetValue = defaultResetTime) {
+      const now = new Date();
+      const resetMinutes = timeToMinutes(resetValue || defaultResetTime);
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      const adjusted = new Date(now);
+      if (currentMinutes < resetMinutes) adjusted.setDate(adjusted.getDate() - 1);
+      return `${adjusted.getFullYear()}-${String(adjusted.getMonth() + 1).padStart(2, "0")}-${String(adjusted.getDate()).padStart(2, "0")}`;
+    }
+
+    function timeToMinutes(time) {
+      const [hour, minute] = time.split(":").map(Number);
+      return hour * 60 + minute;
+    }
+
+    function fillHqSelect() {
+      hqLevelSelect.innerHTML = hqRequirements
+        .map(item => `<option value="${item.level}">HQ ${item.level}</option>`)
+        .join("");
+      hqLevelSelect.value = "30";
+    }
+
+    function renderSourceData() {
+      const selected = hqRequirements.find(item => String(item.level) === hqLevelSelect.value) || hqRequirements.at(-1);
+      document.querySelector("#hqTitle").textContent = `HQ ${selected.level} - héros cap ${selected.cap}`;
+      document.querySelector("#hqDetails").textContent = `Bâtiments: ${selected.buildings}. Ressources: ${selected.rss}.`;
+      document.querySelector("#tankSummary").textContent = `${tankDataSummary.totalWrenches.toLocaleString("fr-FR")} wrenches au total. Véhicules spéciaux: ${tankDataSummary.specialVehicles.join(", ")}. Dernier jalon: ${tankDataSummary.lastMilestone}.`;
+    }
+
+    function renderAlliance() {
+      const total = allianceMembers.reduce((sum, member) => sum + (member.scores[0] || 0), 0);
+      const arenaTotal = allianceMembers.reduce((sum, member) => sum + (arenaPowerByName[member.name] || 0), 0);
+      const computedMembers = allianceMembers.map(member => {
+        const score = member.scores[0] || 0;
+        const arenaPower = arenaPowerByName[member.name];
+        const scoreContribution = total ? score / total : 0;
+        const powerContribution = Number.isFinite(arenaPower) && arenaTotal ? arenaPower / arenaTotal : null;
+        const averageContribution = Number.isFinite(powerContribution)
+          ? (scoreContribution + powerContribution) / 2
+          : scoreContribution;
+        return { ...member, alliance: member.alliance || "TMZ1", arenaPower, scoreContribution, powerContribution, averageContribution };
+      });
+      const top = [...computedMembers].sort((a, b) => b.averageContribution - a.averageContribution)[0];
+      const knownArena = allianceMembers.filter(member => Number.isFinite(arenaPowerByName[member.name])).length;
+      document.querySelector("#allianceMembersCount").textContent = allianceMembers.length;
+      document.querySelector("#allianceTotalScore").textContent = formatScore(total);
+      document.querySelector("#allianceTopContributor").textContent = top ? top.name : "-";
+      document.querySelector("#allianceKnownWeeks").textContent = "1/1";
+      document.querySelector("#allianceArenaKnown").textContent = `${knownArena}/${allianceMembers.length}`;
+
+      const searchTerm = normalizeSearchTerm(allianceSearch?.value || "");
+      const filteredMembers = searchTerm
+        ? computedMembers.filter(member => allianceMemberMatches(member, searchTerm))
+        : computedMembers;
+      const sortedMembers = [...filteredMembers].sort((a, b) => compareAllianceMembers(a, b, allianceSortState));
+      const rows = sortedMembers
+        .map((member, index) => {
+          const allianceRank = allianceRankByName[member.name] || "-";
+          return `
+            <tr>
+              <td class="member-rank">${index + 1}</td>
+              <td class="member-rank">${allianceRank}</td>
+              <td class="member-name">${escapeHtml(member.name)}</td>
+              <td class="member-alliance">${escapeHtml(member.alliance)}</td>
+              <td>${formatScore(member.scores[0])}</td>
+              <td>${formatArenaPower(member.arenaPower)}</td>
+              <td>${formatRatio(member.scoreContribution)}</td>
+              <td>${formatRatio(member.powerContribution)}</td>
+              <td>${formatRatio(member.averageContribution)}</td>
+            </tr>
+          `;
+        }).join("");
+      const sortDirection = allianceSortState.direction === "asc" ? "ascending" : "descending";
+      const sortLabels = {
+        rank: "Rang",
+        allianceRank: "Rank",
+        name: "Membre",
+        alliance: "Alliance",
+        score: allianceScoreLabel,
+        arenaPower: "Arena Power",
+        scoreContribution: "Contribution score",
+        powerContribution: "Power contribution",
+        averageContribution: "Moyenne"
+      };
+      document.querySelector("#allianceTable").innerHTML = `
+        <thead>
+          <tr>
+            <th class="member-rank sortable" aria-sort="${allianceSortState.key === "rank" ? sortDirection : "none"}"><button type="button" data-sort-key="rank">${sortLabels.rank}${sortIndicator("rank")}</button></th>
+            <th class="member-rank sortable" aria-sort="${allianceSortState.key === "allianceRank" ? sortDirection : "none"}"><button type="button" data-sort-key="allianceRank">${sortLabels.allianceRank}${sortIndicator("allianceRank")}</button></th>
+            <th class="member-name-head sortable" aria-sort="${allianceSortState.key === "name" ? sortDirection : "none"}"><button type="button" data-sort-key="name">${sortLabels.name}${sortIndicator("name")}</button></th>
+            <th class="member-alliance-head sortable" aria-sort="${allianceSortState.key === "alliance" ? sortDirection : "none"}"><button type="button" data-sort-key="alliance">${sortLabels.alliance}${sortIndicator("alliance")}</button></th>
+            <th class="sortable" aria-sort="${allianceSortState.key === "score" ? sortDirection : "none"}"><button type="button" data-sort-key="score">${sortLabels.score}${sortIndicator("score")}</button></th>
+            <th class="sortable" aria-sort="${allianceSortState.key === "arenaPower" ? sortDirection : "none"}"><button type="button" data-sort-key="arenaPower">${sortLabels.arenaPower}${sortIndicator("arenaPower")}</button></th>
+            <th class="sortable" aria-sort="${allianceSortState.key === "scoreContribution" ? sortDirection : "none"}"><button type="button" data-sort-key="scoreContribution">${sortLabels.scoreContribution}${sortIndicator("scoreContribution")}</button></th>
+            <th class="sortable" aria-sort="${allianceSortState.key === "powerContribution" ? sortDirection : "none"}"><button type="button" data-sort-key="powerContribution">${sortLabels.powerContribution}${sortIndicator("powerContribution")}</button></th>
+            <th class="sortable" aria-sort="${allianceSortState.key === "averageContribution" ? sortDirection : "none"}"><button type="button" data-sort-key="averageContribution">${sortLabels.averageContribution}${sortIndicator("averageContribution")}</button></th>
+          </tr>
+        </thead>
+        <tbody>${rows || `<tr><td colspan="9" class="empty">Aucun résultat pour cette recherche.</td></tr>`}</tbody>
+      `;
+      document.querySelectorAll("#allianceTable [data-sort-key]").forEach(button => {
+        button.addEventListener("click", () => {
+          const key = button.dataset.sortKey;
+          allianceSortState = key === allianceSortState.key
+            ? { key, direction: allianceSortState.direction === "asc" ? "desc" : "asc" }
+            : { key, direction: defaultAllianceSortDirection(key) };
+          renderAlliance();
+        });
+      });
+    }
+
+    function normalizeSearchTerm(value) {
+      return String(value || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim()
+        .toLowerCase();
+    }
+
+    function allianceMemberMatches(member, searchTerm) {
+      const searchable = [
+        member.rank,
+        allianceRankByName[member.name] || "-",
+        member.name,
+        member.alliance || "TMZ1",
+        formatScore(member.scores[0]),
+        formatArenaPower(member.arenaPower).replace(/<[^>]+>/g, ""),
+        formatRatio(member.scoreContribution),
+        formatRatio(member.powerContribution),
+        formatRatio(member.averageContribution)
+      ].join(" ");
+      return normalizeSearchTerm(searchable).includes(searchTerm);
+    }
+
+    function defaultAllianceSortDirection(key) {
+      return key === "rank" || key === "name" || key === "alliance" ? "asc" : "desc";
+    }
+
+    function compareAllianceMembers(a, b, sortState) {
+      const direction = sortState.direction === "asc" ? 1 : -1;
+      let result = 0;
+      switch (sortState.key) {
+        case "rank":
+          result = (a.rank || 0) - (b.rank || 0);
+          break;
+        case "allianceRank":
+          result = compareRankLabels(allianceRankByName[a.name], allianceRankByName[b.name]);
+          break;
+        case "name":
+          result = a.name.localeCompare(b.name, "fr", { sensitivity: "base" });
+          break;
+        case "alliance":
+          result = String(a.alliance || "").localeCompare(String(b.alliance || ""), "fr", { sensitivity: "base" });
+          break;
+        case "score":
+          result = (a.scores[0] || 0) - (b.scores[0] || 0);
+          break;
+        case "arenaPower":
+          result = (a.arenaPower || -1) - (b.arenaPower || -1);
+          break;
+        case "scoreContribution":
+          result = (a.scoreContribution || 0) - (b.scoreContribution || 0);
+          break;
+        case "powerContribution":
+          result = (a.powerContribution ?? -1) - (b.powerContribution ?? -1);
+          break;
+        case "averageContribution":
+        default:
+          result = (a.averageContribution || 0) - (b.averageContribution || 0);
+          break;
+      }
+      if (result === 0) result = (a.rank || 0) - (b.rank || 0);
+      return result * direction;
+    }
+
+    function compareRankLabels(a, b) {
+      const rankOrder = rank => {
+        if (!rank || rank === "-") return 99;
+        const match = String(rank).match(/^R(\d+)$/i);
+        return match ? Number(match[1]) : 98;
+      };
+      return rankOrder(a) - rankOrder(b);
+    }
+
+    function sortIndicator(key) {
+      if (allianceSortState.key !== key) return "";
+      return `<span class="sort-indicator">${allianceSortState.direction === "asc" ? "▲" : "▼"}</span>`;
+    }
+
+    function formatScore(value) {
+      return Number(value || 0).toLocaleString("fr-FR");
+    }
+
+    function formatOptionalScore(value) {
+      return Number.isFinite(value) ? formatScore(value) : `<span class="muted">-</span>`;
+    }
+
+    function formatArenaPower(value) {
+      if (!Number.isFinite(value)) return `<span class="muted">-</span>`;
+      return `${value.toLocaleString("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`;
+    }
+
+    function formatRatio(value) {
+      if (!Number.isFinite(value)) return `<span class="muted">-</span>`;
+      return `${(value * 100).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`;
+    }
+
+    function renderTask(task) {
+      const item = document.createElement("article");
+      item.className = `task${task.done ? " done" : ""}`;
+      item.innerHTML = `
+        <div class="task-title">
+          <button class="check" type="button" title="Basculer le statut">${task.done ? "✓" : ""}</button>
+          <div class="task-name">${escapeHtml(task.name)}</div>
+          <div class="task-actions">
+            <button class="icon-btn ghost edit" type="button" title="Modifier">✎</button>
+            <button class="icon-btn triple-btn done-three" type="button" title="Marquer cette tâche faite sur les 3 comptes">3 comptes</button>
+            <button class="icon-btn danger delete" type="button" title="Supprimer">×</button>
+          </div>
+        </div>
+        <div class="task-meta">
+          <span class="tag moment">${momentLabel[task.moment] || "Après reset"}</span>
+          <span class="tag ${task.priority}">${priorityLabel[task.priority]}</span>
+          ${task.weekday ? `<span class="tag">${weekdayLabel[task.weekday]}</span>` : ""}
+          ${task.time ? `<span class="tag">${task.time}</span>` : ""}
+        </div>
+      `;
+      item.querySelector(".check").addEventListener("click", () => {
+        task.done = !task.done;
+        render();
+      });
+      item.querySelector(".edit").addEventListener("click", () => openEdit(task));
+      item.querySelector(".done-three").addEventListener("click", () => {
+        markTaskDoneOnAllAccounts(task);
+        render();
+      });
+      item.querySelector(".delete").addEventListener("click", () => {
+        account().tasks = account().tasks.filter(item => item.id !== task.id);
+        render();
+      });
+      return item;
+    }
+
+    function markTaskDoneOnAllAccounts(task) {
+      const key = normalizeTaskName(task.name);
+      const planItem = todayPlan.find(item => normalizeTaskName(item.name) === key);
+      if (planItem && planItem.accounts.length < 3) {
+        account().tasks
+          .filter(candidate => normalizeTaskName(candidate.name) === key)
+          .forEach(candidate => {
+            candidate.done = true;
+          });
+        return;
+      }
+      state.accounts.forEach(item => {
+        item.tasks
+          .filter(candidate => normalizeTaskName(candidate.name) === key)
+          .forEach(candidate => {
+            candidate.done = true;
+          });
+      });
+    }
+
+    function priorityRank(priority) {
+      return { high: 0, mid: 1, low: 2 }[priority] ?? 3;
+    }
+
+    function momentRank(moment) {
+      return { reset: 0, midday: 1, evening: 2, beforeReset: 3, night: 4 }[moment] ?? 5;
+    }
+
+    function fillMomentSelect(select) {
+      select.innerHTML = moments
+        .filter(([key]) => key !== "all")
+        .map(([key, label]) => `<option value="${key}">${label}</option>`)
+        .join("");
+    }
+
+    function suggestedMoment(resetValue = "00:00") {
+      const [resetHour = 0, resetMinute = 0] = String(resetValue || "00:00").split(":").map(Number);
+      const now = new Date();
+      const nowMinutes = now.getHours() * 60 + now.getMinutes();
+      const resetMinutes = resetHour * 60 + resetMinute;
+      const minutesSinceReset = (nowMinutes - resetMinutes + 1440) % 1440;
+      const hour = minutesSinceReset / 60;
+      if (hour < 3) return "reset";
+      if (hour < 10) return "midday";
+      if (hour < 18) return "evening";
+      if (hour < 22) return "beforeReset";
+      return "night";
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      })[char]);
+    }
+
+    taskForm.addEventListener("submit", event => {
+      event.preventDefault();
+      const name = document.querySelector("#taskName").value.trim();
+      if (!name) return;
+      account().tasks.push(makeTask({
+        name,
+        category: document.querySelector("#taskCategory").value,
+        priority: document.querySelector("#taskPriority").value,
+        moment: document.querySelector("#taskMoment").value,
+        time: document.querySelector("#taskTime").value
+      }));
+      taskForm.reset();
+      document.querySelector("#taskPriority").value = "high";
+      document.querySelector("#taskMoment").value = activeMoment === "all" ? suggestedMoment(resetTime.value) : activeMoment;
+      render();
+    });
+
+    function openEdit(task) {
+      document.querySelector("#editId").value = task.id;
+      document.querySelector("#editName").value = task.name;
+      document.querySelector("#editCategory").value = task.category;
+      document.querySelector("#editPriority").value = task.priority;
+      document.querySelector("#editMoment").value = task.moment || "reset";
+      document.querySelector("#editTime").value = task.time;
+      editDialog.showModal();
+    }
+
+    editForm.addEventListener("submit", event => {
+      event.preventDefault();
+      const id = document.querySelector("#editId").value;
+      const task = account().tasks.find(item => item.id === id);
+      if (task) {
+        task.name = document.querySelector("#editName").value.trim();
+        task.category = document.querySelector("#editCategory").value;
+        task.priority = document.querySelector("#editPriority").value;
+        task.moment = document.querySelector("#editMoment").value;
+        task.time = document.querySelector("#editTime").value;
+      }
+      editDialog.close();
+      render();
+    });
+
+    document.querySelector("#cancelEdit").addEventListener("click", () => editDialog.close());
+
+    document.querySelector("#resetDaily").addEventListener("click", () => {
+      account().tasks.forEach(task => {
+        if (task.category === "daily") task.done = false;
+      });
+      render();
+    });
+
+    document.querySelector("#clearDone").addEventListener("click", () => {
+      account().tasks = account().tasks.filter(task => !task.done);
+      render();
+    });
+
+    document.querySelector("#copyPlan").addEventListener("click", async () => {
+      const current = account();
+      const lines = current.tasks.map(task => {
+        const status = task.done ? "OK" : "A faire";
+        const time = task.time ? ` ${task.time}` : "";
+        return `[${status}] ${momentLabel[task.moment] || "Après reset"}${time} - ${task.name}`;
+      });
+      await navigator.clipboard.writeText(`${current.name}\n${lines.join("\n")}`);
+    });
+
+    resetTime.addEventListener("change", () => {
+      if (activeMoment !== "all") activeMoment = suggestedMoment(resetTime.value);
+      fullPrepDay.value = currentFullPrepDay(resetTime.value);
+      render();
+    });
+
+    fullPrepDay.addEventListener("change", render);
+    hqLevelSelect.addEventListener("change", renderSourceData);
+    dailyTab.addEventListener("click", () => switchToolTab("daily"));
+    allianceTab.addEventListener("click", () => switchToolTab("alliance"));
+    allianceSearch.addEventListener("input", () => renderAlliance());
+    document.querySelector("#focusDoneAll").addEventListener("click", () => {
+      const task = account().tasks.find(item => item.id === focusTaskId);
+      if (!task) return;
+      markTaskDoneOnAllAccounts(task);
+      render();
+    });
+
+    document.querySelector("#exportData").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "last-z-taches-3-comptes.json";
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.querySelector("#taskMoment").value = activeMoment === "all" ? suggestedMoment(resetTime.value) : activeMoment;
+    render();
+  </script>
+</body>
+</html>
