@@ -2169,7 +2169,7 @@
       const top = [...computedMembers].sort((a, b) => b.averageContribution - a.averageContribution)[0];
       const knownArena = allianceMembers.filter(member => Number.isFinite(member.arenaPower) || Number.isFinite(arenaPowerByName[member.name])).length;
       document.querySelector("#allianceMembersCount").textContent = allianceMembers.length;
-      document.querySelector("#allianceTotalScore").textContent = formatScore(total);
+      document.querySelector("#allianceTotalScore").textContent = formatAllianceScore(total);
       document.querySelector("#allianceTopContributor").textContent = top ? top.name : "-";
       document.querySelector("#allianceKnownWeeks").textContent = "1/1";
       document.querySelector("#allianceArenaKnown").textContent = `${knownArena}/${allianceMembers.length}`;
@@ -2188,7 +2188,7 @@
               <td class="member-rank">${allianceRank}</td>
               <td class="member-name">${escapeHtml(member.name)}</td>
               <td class="member-alliance">${escapeHtml(member.alliance)}</td>
-              <td>${formatScore(member.scores[0])}</td>
+              <td>${formatAllianceScore(member.scores[0])}</td>
               <td>${formatArenaPower(member.arenaPower)}</td>
               <td>${formatRatio(member.scoreContribution)}</td>
               <td>${formatRatio(member.powerContribution)}</td>
@@ -2249,7 +2249,7 @@
         allianceRankByName[member.name] || "-",
         member.name,
         member.alliance || "TMZ1",
-        formatScore(member.scores[0]),
+        formatAllianceScore(member.scores[0]),
         Number.isFinite(member.arenaPower) ? `${member.arenaPower.toLocaleString("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M` : "-",
         formatRatio(member.scoreContribution),
         formatRatio(member.powerContribution),
@@ -2315,6 +2315,10 @@
 
     function formatScore(value) {
       return Number(value || 0).toLocaleString("fr-FR");
+    }
+
+    function formatAllianceScore(value) {
+      return `${(Number(value || 0) / 1000000).toLocaleString("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`;
     }
 
     function formatOptionalScore(value) {
