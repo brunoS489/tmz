@@ -661,6 +661,19 @@
       overflow-wrap: anywhere;
     }
 
+    .alliance-table th:last-child,
+    .alliance-table td:last-child {
+      position: sticky;
+      right: 0;
+      z-index: 1;
+      background: rgba(36, 43, 51, .94);
+      box-shadow: -10px 0 14px rgba(0, 0, 0, .2);
+    }
+
+    .alliance-table th:last-child {
+      z-index: 2;
+    }
+
     .muted {
       color: var(--muted);
     }
@@ -855,6 +868,25 @@
       .lookup { grid-template-columns: 1fr; }
       .focus-task { grid-template-columns: 1fr; }
       .done-all { width: 100%; }
+      .alliance-table {
+        min-width: 800px;
+        font-size: .92rem;
+      }
+      .alliance-table th,
+      .alliance-table td {
+        padding: 8px;
+      }
+      .alliance-table .member-rank {
+        width: 56px;
+      }
+      .alliance-table .member-alliance,
+      .alliance-table .member-alliance-head {
+        width: 96px;
+      }
+      .alliance-table .member-name,
+      .alliance-table .member-name-head {
+        min-width: 160px;
+      }
     }
 
     @media (max-width: 680px) {
