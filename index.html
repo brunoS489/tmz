@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Last Z - Gestion des 3 comptes</title>
+  <title>Last Z - 3-Account Manager</title>
   <style>
     :root {
       color-scheme: dark;
@@ -990,49 +990,49 @@
   <div class="app">
     <header>
       <div>
-        <h1>Last Z - Gestion des 3 comptes</h1>
-        <p class="subtitle">Planifier les routines, suivre l’avancement et ne pas oublier les tâches importantes sur chaque compte.</p>
+        <h1>Last Z - 3-Account Manager</h1>
+        <p class="subtitle">Plan routines, track progress, and never forget the important tasks on each account.</p>
       </div>
       <div class="today">
-        <span>Aujourd’hui</span>
+        <span>Today</span>
         <strong id="todayLabel"></strong>
       </div>
     </header>
 
     <div class="tool-tabs" role="tablist" aria-label="Sections de l'outil">
-      <button class="tab-btn active" id="dailyTab" type="button">Aujourd'hui</button>
+      <button class="tab-btn active" id="dailyTab" type="button">Today</button>
       <button class="tab-btn" id="allianceTab" type="button">Alliance</button>
       <button class="tab-btn" id="movementsTab" type="button">Movements</button>
     </div>
 
     <div class="layout view" id="routineView">
       <aside>
-        <nav class="account-list" id="accountTabs" aria-label="Comptes"></nav>
+        <nav class="account-list" id="accountTabs" aria-label="Accounts"></nav>
         <section class="quick">
-          <h2>Actions rapides</h2>
+          <h2>Quick actions</h2>
           <div class="settings">
             <label>
-              Heure reset serveur
+              Server reset time
               <input id="resetTime" type="time" value="04:00">
             </label>
             <label>
-              Jour Full Prep
+              Full Prep day
               <select id="fullPrepDay">
-                <option value="1">Lundi - Day 1</option>
-                <option value="2">Mardi - Day 2</option>
-                <option value="3">Mercredi - Day 3</option>
-                <option value="4">Jeudi - Day 4</option>
-                <option value="5">Vendredi - Day 5</option>
-                <option value="6">Samedi - Day 6</option>
-                <option value="7">Dimanche - Day 7</option>
+                <option value="1">Monday - Day 1</option>
+                <option value="2">Tuesday - Day 2</option>
+                <option value="3">Wednesday - Day 3</option>
+                <option value="4">Thursday - Day 4</option>
+                <option value="5">Friday - Day 5</option>
+                <option value="6">Saturday - Day 6</option>
+                <option value="7">Sunday - Day 7</option>
               </select>
             </label>
           </div>
           <div class="quick-actions">
-            <button class="ghost" id="resetDaily" title="Remettre les tâches quotidiennes à faire">↻ Quotidien</button>
-            <button class="ghost" id="copyPlan" title="Copier le plan du compte actif">⧉ Copier</button>
-            <button class="danger" id="clearDone" title="Supprimer les tâches terminées">× Finies</button>
-            <button class="primary" id="exportData" title="Exporter une sauvegarde">↓ Export</button>
+            <button class="ghost" id="resetDaily" title="Reset daily tasks">↻ Daily</button>
+            <button class="ghost" id="copyPlan" title="Copy the active account plan">⧉ Copy</button>
+            <button class="danger" id="clearDone" title="Delete completed tasks">× Done</button>
+            <button class="primary" id="exportData" title="Export a backup">↓ Export</button>
           </div>
         </section>
       </aside>
@@ -1041,10 +1041,10 @@
         <section class="summary">
           <h2 id="activeAccountName"></h2>
           <div class="stats">
-            <div class="stat"><b id="statDone">0</b><span>tâches terminées</span></div>
-            <div class="stat"><b id="statTodo">0</b><span>reste à faire</span></div>
-            <div class="stat"><b id="statHigh">0</b><span>priorités fortes</span></div>
-            <div class="stat"><b id="statPercent">0%</b><span>progression</span></div>
+            <div class="stat"><b id="statDone">0</b><span>tasks completed</span></div>
+            <div class="stat"><b id="statTodo">0</b><span>left to do</span></div>
+            <div class="stat"><b id="statHigh">0</b><span>high priorities</span></div>
+            <div class="stat"><b id="statPercent">0%</b><span>progress</span></div>
           </div>
           <div class="progress" aria-label="Progression"><div id="progressBar"></div></div>
           <div class="now-panel" id="nowPanel">
@@ -1054,69 +1054,69 @@
           <div class="moment-filter" id="momentFilter" aria-label="Filtrer par moment"></div>
           <form class="task-form" id="taskForm">
             <label>
-              Tâche
-              <input id="taskName" maxlength="90" placeholder="Ex: récolter les ressources" required>
+              Task
+              <input id="taskName" maxlength="90" placeholder="Ex: collect resources" required>
             </label>
             <label>
-              Catégorie
+              Category
               <select id="taskCategory">
-                <option value="daily">Quotidien</option>
-                <option value="weekly">Hebdo</option>
-                <option value="event">Événement</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="event">Event</option>
               </select>
             </label>
             <label>
-              Moment conseillé
+              Suggested moment
               <select id="taskMoment"></select>
             </label>
             <label>
-              Priorité
+              Priority
               <select id="taskPriority">
-                <option value="high">Forte</option>
-                <option value="mid">Moyenne</option>
-                <option value="low">Basse</option>
+                <option value="high">High</option>
+                <option value="mid">Medium</option>
+                <option value="low">Low</option>
               </select>
             </label>
             <label>
-              Heure
+              Time
               <input id="taskTime" type="time">
             </label>
-            <button class="primary" type="submit" title="Ajouter la tâche">+ Ajouter</button>
+            <button class="primary" type="submit" title="Add task">+ Add</button>
           </form>
         </section>
 
         <section class="focus-panel">
-          <h2>À faire maintenant</h2>
+          <h2>What to do now</h2>
           <div class="focus-task">
             <div>
               <strong id="focusTaskName">-</strong>
               <span id="focusTaskMeta"></span>
             </div>
-            <button class="done-all" id="focusDoneAll" type="button">Fait sur 3 comptes</button>
+            <button class="done-all" id="focusDoneAll" type="button">Done on all 3 accounts</button>
           </div>
         </section>
 
         <section class="today-matrix-panel">
-          <h2>Suivi aujourd'hui par compte</h2>
+          <h2>Today's progress by account</h2>
           <div class="matrix-wrap">
             <table class="today-matrix" id="todayMatrix"></table>
           </div>
         </section>
 
         <section class="prep-panel">
-          <h2>Full Prep - créneau actuel</h2>
+          <h2>Full Prep - current slot</h2>
           <div class="prep-status">
             <div class="prep-card">
-              <span>Créneau actuel</span>
+              <span>Current slot</span>
               <b id="prepCurrent">-</b>
             </div>
             <div class="prep-card">
-              <span>Prochain créneau</span>
+              <span>Next slot</span>
               <b id="prepNext">-</b>
             </div>
             <div class="prep-card">
-              <span>Conseil</span>
-              <b id="prepAdvice">Prépare les actions du thème avant le créneau.</b>
+              <span>Advice</span>
+              <b id="prepAdvice">Prepare the theme actions before the slot.</b>
             </div>
           </div>
           <div class="prep-table-wrap">
@@ -1125,22 +1125,22 @@
         </section>
 
         <section class="source-panel">
-          <h2>Sources & données Last Z</h2>
+          <h2>Last Z sources & data</h2>
           <div class="source-grid">
             <div class="source-card">
               <strong>DWD Field Research</strong>
-              <span>Google Sheet CSV lu: 123 lignes. Coûts badges et conditions Field Research.</span>
-              <a href="https://docs.google.com/spreadsheets/d/17aDXEUMBsfr9SrlcnFrUjYCoTa2HeAfF/edit?gid=290957211#gid=290957211" target="_blank" rel="noreferrer">Ouvrir le Google Sheet</a>
+              <span>CSV Google Sheet read: 123 lines. Badge costs and Field Research conditions.</span>
+              <a href="https://docs.google.com/spreadsheets/d/17aDXEUMBsfr9SrlcnFrUjYCoTa2HeAfF/edit?gid=290957211#gid=290957211" target="_blank" rel="noreferrer">Open Google Sheet</a>
             </div>
             <div class="source-card">
               <strong>Last Z Helper</strong>
-              <span>Données publiques détectées: HQ, Research, Tank, Heroes, Equipment, Calculators, Lucky Discounter.</span>
-              <a href="https://lastz.stresswar.com/" target="_blank" rel="noreferrer">Ouvrir Last Z Helper</a>
+              <span>Public data detected: HQ, Research, Tank, Heroes, Equipment, Calculators, Lucky Discounter.</span>
+              <a href="https://lastz.stresswar.com/" target="_blank" rel="noreferrer">Open Last Z Helper</a>
             </div>
             <div class="source-card">
               <strong>Lucky Discounter</strong>
-              <span>Garanties 90%: tirages 5, 9, 18, 32. Paliers: 30K à 750K points.</span>
-              <a href="https://lastz.stresswar.com/events/lucky-discounter" target="_blank" rel="noreferrer">Ouvrir le calculateur</a>
+              <span>90% guarantees: pulls 5, 9, 18, 32. Milestones: 30K to 750K points.</span>
+              <a href="https://lastz.stresswar.com/events/lucky-discounter" target="_blank" rel="noreferrer">Open calculator</a>
             </div>
           </div>
           <div class="lookup">
@@ -1159,12 +1159,12 @@
               <span id="tankSummary"></span>
             </div>
             <div class="source-card">
-              <strong>Research à prioriser</strong>
-              <span>Le Google Sheet indique que Field Research demande New Home 100%, Elite Troops 100%, Military Strategies 40% et Siege to Seize 100%.</span>
+              <strong>Research to prioritize</strong>
+              <span>The Google Sheet shows that Field Research requires New Home 100%, Elite Troops 100%, Military Strategies 40%, and Siege to Seize 100%.</span>
             </div>
             <div class="source-card">
-              <strong>Prochaine intégration utile</strong>
-              <span>Transformer les coûts Research/Hero/Equipment en calculateurs intégrés, un par un, pour éviter une interface trop chargée.</span>
+              <strong>Next useful integration</strong>
+              <span>Turn Research/Hero/Equipment costs into built-in calculators, one by one, to avoid a cluttered interface.</span>
             </div>
           </div>
         </section>
@@ -1179,18 +1179,18 @@
         <div class="alliance-toolbar">
           <div>
             <label>
-              Recherche dans le tableau
-              <input class="alliance-search" id="allianceSearch" type="search" placeholder="Nom, rank, score, arena, contribution...">
+              Search the table
+            <input class="alliance-search" id="allianceSearch" type="search" placeholder="Name, rank, score, arena, contribution...">
             </label>
-            <p class="hint">La recherche parcourt toutes les colonnes affichées.</p>
+            <p class="hint">Search scans all visible columns.</p>
           </div>
         </div>
         <div class="alliance-summary">
-          <div class="stat"><b id="allianceMembersCount">0</b><span>membres recensés</span></div>
-          <div class="stat"><b id="allianceTotalScore">0</b><span>score total semaine actuelle</span></div>
-          <div class="stat"><b id="allianceTopContributor">-</b><span>meilleur contributeur</span></div>
-          <div class="stat"><b id="allianceKnownWeeks">1/1</b><span>score 3S renseigné</span></div>
-          <div class="stat"><b id="allianceArenaKnown">0</b><span>arena power renseigné</span></div>
+          <div class="stat"><b id="allianceMembersCount">0</b><span>members listed</span></div>
+          <div class="stat"><b id="allianceTotalScore">0</b><span>current week's total score</span></div>
+          <div class="stat"><b id="allianceTopContributor">-</b><span>top contributor</span></div>
+          <div class="stat"><b id="allianceKnownWeeks">1/1</b><span>3-week score filled in</span></div>
+          <div class="stat"><b id="allianceArenaKnown">0</b><span>arena power filled in</span></div>
         </div>
         <div class="alliance-table-wrap">
           <table class="alliance-table" id="allianceTable"></table>
@@ -1202,12 +1202,12 @@
       <section class="alliance-panel">
         <h2>Movements - top 100 TMZ1</h2>
         <div class="movements-summary">
-          <div class="stat"><b id="movementsTargetCount">100</b><span>joueurs cible TMZ1</span></div>
+          <div class="stat"><b id="movementsTargetCount">100</b><span>target players TMZ1</span></div>
           <div class="stat"><b id="movementsUpCount">0</b><span>TMZ2 → TMZ1</span></div>
           <div class="stat"><b id="movementsDownCount">0</b><span>TMZ1 → TMZ2</span></div>
-          <div class="stat"><b id="movementsCutoff">-</b><span>seuil global contribution</span></div>
+          <div class="stat"><b id="movementsCutoff">-</b><span>global contribution cutoff</span></div>
         </div>
-        <p class="movements-note">Les 100 meilleurs joueurs par global contribution doivent rester dans TMZ1. Les joueurs listés ci-dessous sont ceux qui devraient basculer pour retrouver cette répartition.</p>
+        <p class="movements-note">The top 100 players by global contribution must stay in TMZ1. The players listed below are the ones that should switch to restore this split.</p>
         <div class="movements-grid">
           <section class="movement-card">
             <h3>TMZ2 → TMZ1</h3>
@@ -1228,39 +1228,39 @@
 
   <dialog id="editDialog">
     <form class="dialog-form" id="editForm" method="dialog">
-      <h2>Modifier la tâche</h2>
+      <h2>Edit task</h2>
       <input type="hidden" id="editId">
       <label>
-        Tâche
+        Task
         <input id="editName" maxlength="90" required>
       </label>
       <label>
-        Catégorie
+        Category
         <select id="editCategory">
-          <option value="daily">Quotidien</option>
-          <option value="weekly">Hebdo</option>
-          <option value="event">Événement</option>
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="event">Event</option>
         </select>
       </label>
       <label>
-        Moment conseillé
+        Suggested moment
         <select id="editMoment"></select>
       </label>
       <label>
-        Priorité
+        Priority
         <select id="editPriority">
-          <option value="high">Forte</option>
-          <option value="mid">Moyenne</option>
-          <option value="low">Basse</option>
+          <option value="high">High</option>
+          <option value="mid">Medium</option>
+          <option value="low">Low</option>
         </select>
       </label>
       <label>
-        Heure
+        Time
         <input id="editTime" type="time">
       </label>
       <div class="dialog-actions">
-        <button class="ghost" value="cancel" type="button" id="cancelEdit">Annuler</button>
-        <button class="primary" value="default" type="submit">Enregistrer</button>
+        <button class="ghost" value="cancel" type="button" id="cancelEdit">Cancel</button>
+        <button class="primary" value="default" type="submit">Save</button>
       </div>
     </form>
   </dialog>
@@ -1269,41 +1269,41 @@
     const storageKey = "last-z-three-account-tasks-v1";
     const defaultResetTime = "04:00";
     const categories = [
-      ["daily", "Quotidien"],
-      ["weekly", "Hebdo"],
-      ["event", "Événement"]
+      ["daily", "Daily"],
+      ["weekly", "Weekly"],
+      ["event", "Event"]
     ];
     const moments = [
-      ["all", "Tout"],
-      ["reset", "Après reset"],
-      ["midday", "Midi"],
-      ["evening", "Soir"],
-      ["beforeReset", "Avant reset"],
-      ["night", "Avant nuit"]
+      ["all", "All"],
+      ["reset", "After reset"],
+      ["midday", "Midday"],
+      ["evening", "Evening"],
+      ["beforeReset", "Before reset"],
+      ["night", "Before night"]
     ];
     const momentLabel = Object.fromEntries(moments);
     const momentAdvice = {
-      all: "Vue complète de la routine du compte sélectionné.",
-      reset: "Prends les connexions, points boutique, tâches fraîches, bounties et départs de trucks.",
-      midday: "Relance ce qui est revenu: loot trucks, aides bounty, mines et aides alliance.",
-      evening: "Fais les tâches compétitives et alliance quand le compte est le plus fort et le groupe actif.",
-      beforeReset: "Récupère tout ce qui expire: loot, coffres, battle pass, rewards et objectifs restants.",
-      night: "Lance les mines, marches longues et préparations avant de laisser les comptes dormir."
+      all: "Full routine view of the selected account.",
+      reset: "Grab logins, shop points, fresh tasks, bounties, and truck departures.",
+      midday: "Catch up on what came back: truck loot, bounty help, mines, and alliance help.",
+      evening: "Do competitive and alliance tasks when the account is strongest and the group is active.",
+      beforeReset: "Collect anything expiring: loot, chests, battle pass, rewards, and remaining objectives.",
+      night: "Run mines, long marches, and prep before letting the accounts sleep."
     };
-    const priorityLabel = { high: "Forte", mid: "Moyenne", low: "Basse" };
+    const priorityLabel = { high: "High", mid: "Medium", low: "Low" };
     const accountLabel = {
-      main: "Principal",
+      main: "Main account",
       farm1: "El dragon",
       farm2: "mini wolfson"
     };
     const weekdayLabel = {
-      1: "Lundi",
-      2: "Mardi",
-      3: "Mercredi",
-      4: "Jeudi",
-      5: "Vendredi",
-      6: "Samedi",
-      7: "Dimanche"
+      1: "Monday",
+      2: "Tuesday",
+      3: "Wednesday",
+      4: "Thursday",
+      5: "Friday",
+      6: "Saturday",
+      7: "Sunday"
     };
     const fullPrepTimes = ["04:00", "08:00", "12:00", "16:00", "20:00", "00:00"];
     const fullPrepSchedule = {
@@ -1316,23 +1316,23 @@
       7: ["Mod Vehicle Boost", "Shelter Upgrade", "Army Expansion", "Age of Science", "Hero Progression", "Army Expansion"]
     };
     const prepAdvice = {
-      "Shelter Upgrade": "Garde les constructions/améliorations pour ce créneau.",
-      "Age of Science": "Lance ou termine la recherche pendant ce créneau.",
-      "Mod Vehicle Boost": "Réserve les actions liées aux véhicules/mods pour ce créneau.",
-      "Hero Progression": "Garde shards, XP héros et upgrades héros pour ce créneau.",
-      "Army Expansion": "Réserve entraînement, promotions et actions d'armée pour ce créneau."
+      "Shelter Upgrade": "Keep building and upgrading actions for this slot.",
+      "Age of Science": "Start or finish research during this slot.",
+      "Mod Vehicle Boost": "Reserve vehicle and mod actions for this slot.",
+      "Hero Progression": "Save shards, hero XP, and hero upgrades for this slot.",
+      "Army Expansion": "Reserve training, promotions, and army actions for this slot."
     };
     const prepThemeLabel = {
-      "Shelter Upgrade": "Amélioration abri",
-      "Age of Science": "Âge de la science",
-      "Mod Vehicle Boost": "Modification véhicule",
-      "Hero Progression": "Progression héros",
-      "Army Expansion": "Expansion armée"
+      "Shelter Upgrade": "Shelter upgrade",
+      "Age of Science": "Age of Science",
+      "Mod Vehicle Boost": "Vehicle mod boost",
+      "Hero Progression": "Hero progression",
+      "Army Expansion": "Army expansion"
     };
     const hqRequirements = [
-      { level: 1, cap: 5, buildings: "Aucun", rss: "Wood 0.012M" },
-      { level: 2, cap: 10, buildings: "Aucun", rss: "Food 0.0103M" },
-      { level: 3, cap: 15, buildings: "Aucun", rss: "Food 0.0155M" },
+      { level: 1, cap: 5, buildings: "None", rss: "Wood 0.012M" },
+      { level: 2, cap: 10, buildings: "None", rss: "Food 0.0103M" },
+      { level: 3, cap: 15, buildings: "None", rss: "Food 0.0155M" },
       { level: 4, cap: 20, buildings: "City Wall", rss: "Food 0.0233M" },
       { level: 5, cap: 25, buildings: "Radar, Assaulter Camp", rss: "Food 0.0466M" },
       { level: 10, cap: 50, buildings: "Laboratory, Shooter Camp", rss: "Wood 0.8599M, Food 0.8599M, Zent 0.168M" },
@@ -1345,11 +1345,11 @@
       { level: 33, cap: 165, buildings: "Alliance Center", rss: "Wood 1.7G, Food 1.7G, Zent 347.6M, Steel 4.1M" },
       { level: 34, cap: 170, buildings: "Assaulter Camp", rss: "Wood 2G, Food 2G, Zent 399.5M, Steel 5.3M" },
       { level: 35, cap: 175, buildings: "Shooter Camp", rss: "Wood 2.3G, Food 2.3G, Zent 459.8M, Steel 6.4M" },
-      { level: 36, cap: 180, buildings: "Laboratory, Alliance Center", rss: "Non confirmé" },
-      { level: 37, cap: 185, buildings: "City Walls, Military Center", rss: "Non confirmé" },
-      { level: 38, cap: 190, buildings: "Rider Camp", rss: "Non confirmé" },
-      { level: 39, cap: 195, buildings: "Assaulter Camp", rss: "Non confirmé" },
-      { level: 40, cap: 200, buildings: "Shooter Camp", rss: "Non confirmé" }
+      { level: 36, cap: 180, buildings: "Laboratory, Alliance Center", rss: "Not confirmed" },
+      { level: 37, cap: 185, buildings: "City Walls, Military Center", rss: "Not confirmed" },
+      { level: 38, cap: 190, buildings: "Rider Camp", rss: "Not confirmed" },
+      { level: 39, cap: 195, buildings: "Assaulter Camp", rss: "Not confirmed" },
+      { level: 40, cap: 200, buildings: "Shooter Camp", rss: "Not confirmed" }
     ];
     const tankDataSummary = {
       totalWrenches: 70700,
@@ -1733,13 +1733,13 @@
       { name: "Alliance treasure hunt", category: "event", priority: "mid", moment: "evening", time: "" },
       { name: "Zombie hunter", category: "event", priority: "mid", moment: "evening", time: "" },
       { name: "Mines", category: "daily", priority: "mid", moment: "night", time: "" },
-      { name: "Achats time limited quotidien", category: "daily", priority: "high", moment: "reset", time: "" },
-      { name: "Ouvrir les chests", category: "daily", priority: "high", moment: "beforeReset", time: "" },
+      { name: "Daily limited-time purchases", category: "daily", priority: "high", moment: "reset", time: "" },
+      { name: "Open chests", category: "daily", priority: "high", moment: "beforeReset", time: "" },
       { name: "Daily tasks last chest", category: "daily", priority: "high", moment: "beforeReset", time: "" },
       { name: "Full prep last chest", category: "daily", priority: "high", moment: "beforeReset", time: "" },
       { name: "Battlefield Breakout", category: "event", priority: "high", moment: "evening", time: "", weekday: 7 },
       { name: "Saga", category: "weekly", priority: "high", moment: "reset", time: "", weekday: 7 },
-      { name: "Essayer de gagner Alliance vs", category: "event", priority: "high", moment: "evening", time: "" }
+      { name: "Try to win Alliance vs", category: "event", priority: "high", moment: "evening", time: "" }
     ];
     const todayPlan = [
       { name: "Alliance vs chests", accounts: ["main", "farm1", "farm2"], category: "event", priority: "high", moment: "reset" },
@@ -1749,8 +1749,8 @@
       { name: "Bounty loot", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "high", moment: "beforeReset" },
       { name: "Trucks loot", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "high", moment: "midday" },
       { name: "Hero battle field", accounts: ["main", "farm1", "farm2"], category: "event", priority: "high", moment: "evening" },
-      { name: "Achats time limited quotidien", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "high", moment: "reset" },
-      { name: "Ouvrir les chests", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "high", moment: "beforeReset" },
+      { name: "Daily limited-time purchases", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "high", moment: "reset" },
+      { name: "Open chests", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "high", moment: "beforeReset" },
       { name: "Daily tasks last chest", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "high", moment: "beforeReset" },
       { name: "Full prep last chest", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "high", moment: "beforeReset" },
       { name: "Furylord", accounts: ["main", "farm1", "farm2"], category: "event", priority: "high", moment: "evening", excludeWeekdays: [7] },
@@ -1758,7 +1758,7 @@
       { name: "Saga", accounts: ["main", "farm1", "farm2"], category: "weekly", priority: "high", moment: "reset", weekday: 7 },
       { name: "Arena", accounts: ["main", "farm1", "farm2"], category: "daily", priority: "mid", moment: "evening" },
       { name: "Boomers", accounts: ["main", "farm1", "farm2"], category: "event", priority: "high", moment: "evening" },
-      { name: "Essayer de gagner Alliance vs", accounts: ["main", "farm1", "farm2"], category: "event", priority: "high", moment: "evening" }
+      { name: "Try to win Alliance vs", accounts: ["main", "farm1", "farm2"], category: "event", priority: "high", moment: "evening" }
     ];
     const todayPlanVersion = "2026-06-28-v4";
 
@@ -1785,7 +1785,7 @@
     const allianceSearch = document.querySelector("#allianceSearch");
     let allianceSortState = { key: "averageContribution", direction: "desc" };
 
-    document.querySelector("#todayLabel").textContent = new Intl.DateTimeFormat("fr-FR", {
+    document.querySelector("#todayLabel").textContent = new Intl.DateTimeFormat("en-US", {
       weekday: "long",
       day: "2-digit",
       month: "long"
@@ -1818,6 +1818,7 @@
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed.accounts) && parsed.accounts.length) {
             migrateAccountNames(parsed.accounts);
+            migrateTaskNames(parsed.accounts);
             migrateTaskScheduling(parsed.accounts);
             if (!parsed.settings) parsed.settings = { resetTime: defaultResetTime, fullPrepDay: currentFullPrepDay(defaultResetTime) };
             if (!parsed.settings.resetTime || parsed.settings.resetTime === "00:00") parsed.settings.resetTime = defaultResetTime;
@@ -1845,7 +1846,7 @@
           todayPlanVersion
         },
         accounts: [
-          { id: "main", name: "Compte principal", tasks: defaultTasks.map(makeTask) },
+          { id: "main", name: "Main account", tasks: defaultTasks.map(makeTask) },
           { id: "farm1", name: "El dragon", tasks: defaultTasks.map(makeTask) },
           { id: "farm2", name: "mini wolfson", tasks: defaultTasks.map(makeTask) }
         ]
@@ -1856,11 +1857,26 @@
 
     function migrateAccountNames(accounts) {
       const nameById = {
+        main: "Main account",
         farm1: "El dragon",
         farm2: "mini wolfson"
       };
       accounts.forEach(account => {
         if (nameById[account.id]) account.name = nameById[account.id];
+      });
+    }
+
+    function migrateTaskNames(accounts) {
+      const nameMap = {
+        "Achats time limited quotidien": "Daily limited-time purchases",
+        "Ouvrir les chests": "Open chests",
+        "Essayer de gagner Alliance vs": "Try to win Alliance vs"
+      };
+      accounts.forEach(account => {
+        if (!Array.isArray(account.tasks)) return;
+        account.tasks.forEach(task => {
+          if (nameMap[task.name]) task.name = nameMap[task.name];
+        });
       });
     }
 
@@ -1950,11 +1966,11 @@
         [normalizeTaskName("Bounty loot")]: ["main", "farm1", "farm2"],
         [normalizeTaskName("Trucks loot")]: ["main", "farm1", "farm2"],
         [normalizeTaskName("Hero battle field")]: ["main", "farm1", "farm2"],
-        [normalizeTaskName("Achats time limited quotidien")]: ["main", "farm1", "farm2"],
-        [normalizeTaskName("Ouvrir les chests")]: ["farm2"],
+        [normalizeTaskName("Daily limited-time purchases")]: ["main", "farm1", "farm2"],
+        [normalizeTaskName("Open chests")]: ["farm2"],
         [normalizeTaskName("Arena")]: ["main"],
         [normalizeTaskName("Boomers")]: ["farm2"],
-        [normalizeTaskName("Essayer de gagner Alliance vs")]: ["main"]
+        [normalizeTaskName("Try to win Alliance vs")]: ["main"]
       };
       const previouslyActive = previousVersion === "2026-06-28-v2" ? previousV2[key] || [] : [];
       return !previouslyActive.includes(accountId);
@@ -2067,9 +2083,9 @@
         filter.append(button);
       });
       document.querySelector("#nowTitle").textContent = activeMoment === "all"
-        ? "Routine complète"
-        : `À faire: ${momentLabel[activeMoment]}`;
-      document.querySelector("#nowText").textContent = `${momentAdvice[activeMoment]} Reset serveur: ${resetTime.value || "00:00"}.`;
+        ? "Full routine"
+        : `To do: ${momentLabel[activeMoment]}`;
+      document.querySelector("#nowText").textContent = `${momentAdvice[activeMoment]} Server reset: ${resetTime.value || "00:00"}.`;
     }
 
     function renderSummary() {
@@ -2079,7 +2095,7 @@
       const todo = total - done;
       const high = current.filter(task => !task.done && task.priority === "high").length;
       const percent = total ? Math.round((done / total) * 100) : 0;
-      document.querySelector("#activeAccountName").textContent = `${account().name} - reste aujourd'hui`;
+      document.querySelector("#activeAccountName").textContent = `${account().name} - remaining today`;
       document.querySelector("#statDone").textContent = done;
       document.querySelector("#statTodo").textContent = todo;
       document.querySelector("#statHigh").textContent = high;
@@ -2106,7 +2122,7 @@
         `;
         const list = board.querySelector(".task-list");
         if (!remainingTasks.length) {
-          list.innerHTML = `<div class="empty">Aucune tâche</div>`;
+        list.innerHTML = `<div class="empty">No tasks</div>`;
         } else {
           remainingTasks.forEach(task => list.append(renderTask(task)));
         }
@@ -2126,18 +2142,18 @@
       focusTaskId = candidate?.id || null;
       const button = document.querySelector("#focusDoneAll");
       if (!candidate) {
-        document.querySelector("#focusTaskName").textContent = "Rien à faire sur ce filtre";
-        document.querySelector("#focusTaskMeta").textContent = "Change de moment ou de compte pour voir la prochaine action.";
+        document.querySelector("#focusTaskName").textContent = "Nothing to do in this filter";
+        document.querySelector("#focusTaskMeta").textContent = "Change the moment or account to see the next action.";
         button.disabled = true;
         return;
       }
       button.disabled = false;
       const time = candidate.time ? ` · ${candidate.time}` : "";
       const planItem = scheduledTodayPlanItems().find(item => normalizeTaskName(item.name) === normalizeTaskName(candidate.name));
-      const scope = planItem?.accounts.length === 3 ? "sur les 3 comptes" : account().name;
+      const scope = planItem?.accounts.length === 3 ? "All 3 accounts" : account().name;
       document.querySelector("#focusTaskName").textContent = candidate.name;
-      document.querySelector("#focusTaskMeta").textContent = `${scope} · ${momentLabel[candidate.moment]} · priorité ${priorityLabel[candidate.priority]}${time}`;
-      button.textContent = planItem?.accounts.length === 3 ? "Fait sur 3 comptes" : "Fait";
+      document.querySelector("#focusTaskMeta").textContent = `${scope} · ${momentLabel[candidate.moment]} · priority ${priorityLabel[candidate.priority]}${time}`;
+      button.textContent = planItem?.accounts.length === 3 ? "Done on all 3 accounts" : "Done";
     }
 
     function renderTodayMatrix() {
@@ -2146,7 +2162,7 @@
       const header = `
         <thead>
           <tr>
-            <th class="task-cell">Tâche</th>
+            <th class="task-cell">Task</th>
             <th>${accountLabel.main}</th>
             <th>${accountLabel.farm1}</th>
             <th>${accountLabel.farm2}</th>
@@ -2164,7 +2180,7 @@
               <span>${momentLabel[item.moment]} · ${priorityLabel[item.priority]}</span>
             </td>
             ${cells}
-            <td><button class="all-row-btn${allDone ? " done" : ""}" type="button" data-task="${escapeHtml(item.name)}">${allDone ? "Fait" : "Tout"}</button></td>
+            <td><button class="all-row-btn${allDone ? " done" : ""}" type="button" data-task="${escapeHtml(item.name)}">${allDone ? "Done" : "All"}</button></td>
           </tr>
         `;
       }).join("");
@@ -2232,7 +2248,7 @@
       const nextTheme = fullPrepSchedule[nextSlot.day][nextSlot.index];
       document.querySelector("#prepCurrent").textContent = `${weekdayLabel[activeSlot.day]} ${fullPrepTimes[activeSlot.index]} - ${displayPrepTheme(currentTheme)}`;
       document.querySelector("#prepNext").textContent = `${weekdayLabel[nextSlot.day]} ${fullPrepTimes[nextSlot.index]} - ${displayPrepTheme(nextTheme)}`;
-      document.querySelector("#prepAdvice").textContent = prepAdvice[currentTheme] || "Prépare les actions du thème avant le créneau.";
+      document.querySelector("#prepAdvice").textContent = prepAdvice[currentTheme] || "Prepare the theme actions before the slot.";
       renderFullPrepTable(activeSlot);
     }
 
@@ -2242,7 +2258,7 @@
 
     function renderFullPrepTable(activeSlot) {
       const table = document.querySelector("#prepTable");
-      const head = `<thead><tr><th>Jour</th>${fullPrepTimes.map(time => `<th>${time}</th>`).join("")}</tr></thead>`;
+      const head = `<thead><tr><th>Day</th>${fullPrepTimes.map(time => `<th>${time}</th>`).join("")}</tr></thead>`;
       const rows = Object.entries(fullPrepSchedule).map(([day, themes]) => {
         const cells = themes.map((theme, index) => {
           const active = Number(day) === activeSlot.day && index === activeSlot.index;
@@ -2305,9 +2321,9 @@
 
     function renderSourceData() {
       const selected = hqRequirements.find(item => String(item.level) === hqLevelSelect.value) || hqRequirements.at(-1);
-      document.querySelector("#hqTitle").textContent = `HQ ${selected.level} - héros cap ${selected.cap}`;
-      document.querySelector("#hqDetails").textContent = `Bâtiments: ${selected.buildings}. Ressources: ${selected.rss}.`;
-      document.querySelector("#tankSummary").textContent = `${tankDataSummary.totalWrenches.toLocaleString("fr-FR")} wrenches au total. Véhicules spéciaux: ${tankDataSummary.specialVehicles.join(", ")}. Dernier jalon: ${tankDataSummary.lastMilestone}.`;
+      document.querySelector("#hqTitle").textContent = `HQ ${selected.level} - hero cap ${selected.cap}`;
+      document.querySelector("#hqDetails").textContent = `Buildings: ${selected.buildings}. Resources: ${selected.rss}.`;
+      document.querySelector("#tankSummary").textContent = `${tankDataSummary.totalWrenches.toLocaleString("fr-FR")} wrenches total. Special vehicles: ${tankDataSummary.specialVehicles.join(", ")}. Latest milestone: ${tankDataSummary.lastMilestone}.`;
     }
 
     function buildAllianceSnapshot() {
@@ -2373,7 +2389,7 @@
       const sortLabels = {
         rank: "#",
         allianceRank: "Rank",
-        name: "Membre",
+        name: "Member",
         alliance: "Alliance",
         score: allianceScoreLabel,
         arenaPower: "Puissance en arène",
@@ -2395,7 +2411,7 @@
             <th class="sortable" aria-sort="${allianceSortState.key === "averageContribution" ? sortDirection : "none"}"><button type="button" data-sort-key="averageContribution">${sortLabels.averageContribution}${sortIndicator("averageContribution")}</button></th>
           </tr>
         </thead>
-        <tbody>${rows || `<tr><td colspan="9" class="empty">Aucun résultat pour cette recherche.</td></tr>`}</tbody>
+        <tbody>${rows || `<tr><td colspan="9" class="empty">No results for this search.</td></tr>`}</tbody>
       `;
       document.querySelectorAll("#allianceTable [data-sort-key]").forEach(button => {
         button.addEventListener("click", () => {
@@ -2434,30 +2450,30 @@
         <thead>
           <tr>
             <th class="member-rank">#</th>
-            <th class="member-name-head">Membre</th>
-            <th class="member-alliance-head">Actuelle</th>
-            <th class="member-alliance-head">Cible</th>
-            <th>Score duel</th>
+            <th class="member-name-head">Member</th>
+            <th class="member-alliance-head">Current</th>
+            <th class="member-alliance-head">Target</th>
+            <th>Alliance duel score</th>
             <th>Power</th>
             <th>Global contribution</th>
           </tr>
         </thead>
-        <tbody>${renderRows(promoteToTmz1) || `<tr><td colspan="7" class="empty">Aucun mouvement à monter.</td></tr>`}</tbody>
+        <tbody>${renderRows(promoteToTmz1) || `<tr><td colspan="7" class="empty">No upward movement.</td></tr>`}</tbody>
       `;
 
       document.querySelector("#movementsDownTable").innerHTML = `
         <thead>
           <tr>
             <th class="member-rank">#</th>
-            <th class="member-name-head">Membre</th>
-            <th class="member-alliance-head">Actuelle</th>
-            <th class="member-alliance-head">Cible</th>
-            <th>Score duel</th>
+            <th class="member-name-head">Member</th>
+            <th class="member-alliance-head">Current</th>
+            <th class="member-alliance-head">Target</th>
+            <th>Alliance duel score</th>
             <th>Power</th>
             <th>Global contribution</th>
           </tr>
         </thead>
-        <tbody>${renderRows(demoteToTmz2) || `<tr><td colspan="7" class="empty">Aucun mouvement à descendre.</td></tr>`}</tbody>
+        <tbody>${renderRows(demoteToTmz2) || `<tr><td colspan="7" class="empty">No downward movement.</td></tr>`}</tbody>
       `;
     }
 
@@ -2566,16 +2582,16 @@
       item.className = `task${task.done ? " done" : ""}`;
       item.innerHTML = `
         <div class="task-title">
-          <button class="check" type="button" title="Basculer le statut">${task.done ? "✓" : ""}</button>
+          <button class="check" type="button" title="Toggle status">${task.done ? "✓" : ""}</button>
           <div class="task-name">${escapeHtml(task.name)}</div>
           <div class="task-actions">
-            <button class="icon-btn ghost edit" type="button" title="Modifier">✎</button>
-            <button class="icon-btn triple-btn done-three" type="button" title="Marquer cette tâche faite sur les 3 comptes">3 comptes</button>
-            <button class="icon-btn danger delete" type="button" title="Supprimer">×</button>
+            <button class="icon-btn ghost edit" type="button" title="Edit">✎</button>
+            <button class="icon-btn triple-btn done-three" type="button" title="Mark this task done on all 3 accounts">3 accounts</button>
+            <button class="icon-btn danger delete" type="button" title="Delete">×</button>
           </div>
         </div>
         <div class="task-meta">
-          <span class="tag moment">${momentLabel[task.moment] || "Après reset"}</span>
+          <span class="tag moment">${momentLabel[task.moment] || "After reset"}</span>
           <span class="tag ${task.priority}">${priorityLabel[task.priority]}</span>
           ${task.weekday ? `<span class="tag">${weekdayLabel[task.weekday]}</span>` : ""}
           ${task.time ? `<span class="tag">${task.time}</span>` : ""}
@@ -2715,9 +2731,9 @@
     document.querySelector("#copyPlan").addEventListener("click", async () => {
       const current = account();
       const lines = current.tasks.map(task => {
-        const status = task.done ? "OK" : "A faire";
+        const status = task.done ? "OK" : "To do";
         const time = task.time ? ` ${task.time}` : "";
-        return `[${status}] ${momentLabel[task.moment] || "Après reset"}${time} - ${task.name}`;
+        return `[${status}] ${momentLabel[task.moment] || "After reset"}${time} - ${task.name}`;
       });
       await navigator.clipboard.writeText(`${current.name}\n${lines.join("\n")}`);
     });
